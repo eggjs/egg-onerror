@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ title }} Error</title>
+  <style type="text/css">
+  body { font-family: arial, sans-serif; font-size: 12px; color: #333; background: #f5f5f5;  padding: 0; margin: 0; }
+  .error-info { margin: 0; }
+  h1 { margin: 0; background:#C42A13; color: #FFF; }
+  .box { padding: 15px 20px; }
+  .box .title { font-size: 16px; margin-bottom: 8px; color: #999; }
+  .error-info .summary { font-size: 14px; }
+  .error-info .trace { font-size: 12px; background: #e6e6e6; }
+  pre { border:1px solid #ddd; font-size: 12px; font-family: monospace; line-height: 140%; padding: 10px; border-radius: 3px; background: #FFF; max-height: 350px; word-wrap: break-word; overflow:hidden; overflow-y:scroll; }
+  .rows-10 { max-height: 180px; }
+  ul { margin: 0; padding: 0; list-style-position: inside;}
+  ul li { font-size: 13px; margin:0; padding:0; line-height: 140%; }
+  </style>
+</head>
+<body>
+  <div class="error-info">
+    <h1 class="box">{{ title }} in {{ url }}</h1>
+
+    <div class="box summary">
+      <div class="title">Message</div>
+      <div class="context">{{ message }}</div>
+    </div>
+
+    <div class="box trace">
+      <div class="title">Full Trace</div>
+      <pre>{{ errStack }}</pre>
+    </div>
+
+    <div class="box Request">
+      <div class="title">Request</div>
+      <ul>
+        <li>Host: {{ hostname }}</li>
+        <li>Client IP: {{ ip }}</li>
+        <li>Path: {{ url }}</li>
+        <li>Parameters: {{ query }}</li>
+        <li>User Agent: {{ userAgent }}</li>
+        <li>Accept: {{ accept }}</li>
+      </ul>
+    </div>
+
+    <div class="box header">
+      <div class="title">Cookie Dump</div>
+      <pre>{{ cookie }}</pre>
+    </div>
+
+    <div class="box session">
+      <div class="title">Session Dump</div>
+      <pre>{{ session }}</pre>
+    </div>
+
+    <div class="box env">
+      <div class="title">Environmens</div>
+      <ul>
+        <li>Egg: {{ coreName }}/{{ coreVersion }}</li>
+        <li>BaseDir: {{ baseDir }}</li>
+      </ul>
+      <pre class="rows-10">{{ config }}</pre>
+    </div>
+  </div>
+</body>

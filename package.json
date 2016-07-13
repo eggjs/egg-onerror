@@ -1,10 +1,15 @@
 {
   "name": "egg-onerror",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "error handler for egg",
   "eggPlugin": {
     "name": "onerror"
   },
+  "files": [
+    "config",
+    "app.js",
+    "onerror_page.html"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:eggjs/egg-onerror.git"
@@ -13,15 +18,18 @@
     "egg",
     "plugin"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "escape-html": "^1.0.3",
+    "koa-onerror": "^2.0.0"
+  },
   "devDependencies": {
-    "egg-ci": "1",
-    "egg-bin": "1",
-    "autod": "2",
-    "eslint": "3",
-    "eslint-config-egg": "3",
-    "should": "8",
-    "supertest": "1"
+    "autod": "^2.6.1",
+    "egg-bin": "^1.0.2",
+    "egg-ci": "^1.0.2",
+    "eslint": "^3.0.1",
+    "eslint-config-egg": "^3.1.0",
+    "should": "^9.0.2",
+    "supertest": "^1.2.0"
   },
   "engines": {
     "node": ">=4.0.0"
