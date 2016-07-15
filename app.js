@@ -1,9 +1,5 @@
 'use strict';
 
-/**
- * Module dependencies.
- */
-
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
@@ -11,7 +7,7 @@ const util = require('util');
 const onerror = require('koa-onerror');
 const escapeHTML = require('escape-html');
 
-module.exports = function(app) {
+module.exports = app => {
   // logging error
   const appErrorFilter = app.config.onerror.appErrorFilter;
   app.on('error', (err, ctx) => {
@@ -24,11 +20,11 @@ module.exports = function(app) {
         try {
           ctx.logger.error(err);
         } catch (ex) {
-          this.logger.error(err);
-          this.logger.error(ex);
+          app.logger.error(err);
+          app.logger.error(ex);
         }
       } else {
-        this.logger.error(err);
+        app.logger.error(err);
       }
       return;
     }
@@ -38,11 +34,11 @@ module.exports = function(app) {
       try {
         ctx.coreLogger.warn(err);
       } catch (ex) {
-        this.coreLogger.warn(err);
-        this.coreLogger.warn(ex);
+        app.coreLogger.warn(err);
+        app.coreLogger.warn(ex);
       }
     } else {
-      this.coreLogger.warn(err);
+      app.coreLogger.warn(err);
     }
   });
 
