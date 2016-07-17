@@ -32,13 +32,13 @@ module.exports = app => {
     // 4xx
     if (ctx) {
       try {
-        ctx.coreLogger.warn(err);
+        ctx.logger.warn(err);
       } catch (ex) {
-        app.coreLogger.warn(err);
-        app.coreLogger.warn(ex);
+        app.logger.warn(err);
+        app.logger.warn(ex);
       }
     } else {
-      app.coreLogger.warn(err);
+      app.logger.warn(err);
     }
   });
 
@@ -67,7 +67,7 @@ module.exports = app => {
           return this.redirect(errorPageUrl + statusQuery);
         }
         this.status = 500;
-        this.body = `<h2>Internal Server Error, real status: ${status}</h2>`;
+        this.body = '<h2>Internal Server Error</h2>';
         return;
       }
       // provide detail error message in local env
