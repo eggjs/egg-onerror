@@ -96,7 +96,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
     mm(app.config, 'env', 'test');
     return request(app.callback())
     .get('/?status=500')
-    .expect('Location', 'http://alipay.com/500.html?real_status=500')
+    .expect('Location', 'https://eggjs.com/500.html?real_status=500')
     .expect(302);
   });
 
@@ -104,7 +104,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
     mm(app.config, 'env', 'prod');
     return request(app.callback())
     .get('/?status=400&code=3')
-    .expect('Location', 'http://alipay.com/500.html?real_status=400')
+    .expect('Location', 'https://eggjs.com/500.html?real_status=400')
     .expect(302);
   });
 

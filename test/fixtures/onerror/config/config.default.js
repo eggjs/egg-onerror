@@ -1,7 +1,7 @@
 'use strict';
 
 exports.onerror = {
-  errorPageUrl: 'http://alipay.com/500.html',
+  errorPageUrl: 'https://eggjs.com/500.html',
 };
 
 exports.logger = {
