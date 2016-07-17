@@ -1,132 +1,128 @@
 'use strict';
 
 const fs = require('fs');
-const should = require('should');
 const pedding = require('pedding');
-const request = require('supertest');
+const request = require('supertest-as-promised');
 const mm = require('egg-mock');
 const rimraf = require('rimraf');
 const path = require('path');
+require('should');
 
 describe('test/lib/plugins/onerror.test.js', () => {
   let app;
-  before(done => {
-    mm(process.env, 'EGG_SERVER_ENV', 'local');
+  before(() => {
+    mm.env('local');
     app = mm.app({ baseDir: 'onerror' });
-    app.ready(done);
+    return app.ready();
   });
 
   afterEach(mm.restore);
 
-  it('should handle status:-1 as status:500', done => {
-    request(app.callback())
+  it('should handle status:-1 as status:500', () => {
+    return request(app.callback())
     .get('/?status=-1')
     .expect(/<h1 class="box">Error in \/\?status=\-1<\/h1>/)
-    .expect(500, done);
+    .expect(500);
   });
 
-  it('should handle status:undefined as status:500', done => {
-    request(app.callback())
+  it('should handle status:undefined as status:500', () => {
+    return request(app.callback())
     .get('/')
     .expect(/<div class="context">test error<\/div>/)
-    .expect(500, done);
+    .expect(500);
   });
 
-  it('should handle escape xss', done => {
-    request(app.callback())
+  it('should handle escape xss', () => {
+    return request(app.callback())
     .get('/?message=<script></script>')
     .expect(/&lt;script&gt;&lt;\/script&gt;/)
-    .expect(500, done);
+    .expect(500);
   });
 
-  it('should handle status:1 as status:500', done => {
-    request(app.callback())
+  it('should handle status:1 as status:500', () => {
+    return request(app.callback())
     .get('/?status=1')
     .expect(/<div class="context">test error<\/div>/)
-    .expect(500, done);
+    .expect(500);
   });
 
-  it('should handle status:400', done => {
-    request(app.callback())
+  it('should handle status:400', () => {
+    return request(app.callback())
     .get('/?status=400')
     .expect(/<div class="context">test error<\/div>/)
-    .expect(400, done);
+    .expect(400);
   });
 
-  it('should return err.stack', done => {
-    request(app.callback())
+  it('should return err.stack', () => {
+    return request(app.callback())
     .get('/user.json')
     .expect(/"message":"test error","stack":/)
-    .expect(500, done);
+    .expect(500);
   });
 
-  it('should return err.stack when unittest', done => {
+  it('should return err.stack when unittest', () => {
     mm(app.config, 'env', 'unittest');
-    request(app.callback())
+    return request(app.callback())
     .get('/user.json')
     .expect(/"message":"test error","stack":/)
-    .expect(500, done);
+    .expect(500);
   });
 
-  it('should return err status message', done => {
+  it('should return err status message', () => {
     mm(app.config, 'env', 'prod');
-    request(app.callback())
+    return request(app.callback())
     .get('/user.json')
     .expect({ message: 'Internal Server Error' })
-    .expect(500, done);
+    .expect(500);
   });
 
-  it('should return err.errors', done => {
-    request(app.callback())
+  it('should return err.errors', () => {
+    return request(app.callback())
     .get('/user.json?status=400&errors=test')
     .expect(/test/)
-    .expect(400, done);
+    .expect(400);
   });
 
-  it('should return parsing json error', done => {
-    request(app.callback())
+  it('should return parsing json error', () => {
+    return request(app.callback())
     .post('/test?status=400')
     .send({ test: 1 })
     .set('Content-Type', 'application/json')
     .expect(/Problems parsing JSON/)
-    .expect(400, done);
+    .expect(400);
   });
 
-  it('should redirect to error page', done => {
+  it('should redirect to error page', () => {
     mm(app.config, 'env', 'test');
-    request(app.callback())
+    return request(app.callback())
     .get('/?status=500')
     .expect('Location', 'http://alipay.com/500.html?real_status=500')
-    .expect(302, done);
+    .expect(302);
   });
 
-  it('should handle err code', done => {
+  it('should handle err code', () => {
     mm(app.config, 'env', 'prod');
-    request(app.callback())
+    return request(app.callback())
     .get('/?status=400&code=3')
     .expect('Location', 'http://alipay.com/500.html?real_status=400')
-    .expect(302, done);
+    .expect(302);
   });
 
-  it('should log warn 4xx', done => {
+  it('should log warn 4xx', function* () {
     rimraf.sync(path.join(__dirname, 'fixtrues/onerror/logs'));
 
     const app = mm.app({
       baseDir: 'onerror',
     });
-    request(app.callback())
+    yield app.ready();
+    yield request(app.callback())
     .post('/body_parser')
     .set('Content-Type', 'application/x-www-form-urlencoded')
     .send({ foo: new Buffer(1024 * 100).fill(1).toString() })
     .expect(/request entity too large/)
-    .expect(413, function(err) {
-      should.not.exists(err);
-
-      const warnLog = path.join(__dirname, 'fixtures/onerror/logs/onerror/onerror-web.log');
-      fs.readFileSync(warnLog, 'utf8').should.match(/POST \/body_parser] nodejs.Error: request entity too large/);
-
-      done();
-    });
+    .expect(413);
+    const warnLog = path.join(__dirname, 'fixtures/onerror/logs/onerror/onerror-web.log');
+    fs.readFileSync(warnLog, 'utf8').should.match(/POST \/body_parser] nodejs.Error: request entity too large/);
   });
 
   it('should handle error not in the req/res cycle with no ctx', () => {
@@ -138,89 +134,84 @@ describe('test/lib/plugins/onerror.test.js', () => {
 
   describe('no errorpage', () => {
     let app;
-    before(done => {
+    before(() => {
       app = app = mm.app({
         baseDir: 'onerror-no-errorpage',
       });
-      app.ready(done);
+      return app.ready();
     });
-    it('should display 500 Internal Server Error', done => {
+    it('should display 500 Internal Server Error', () => {
       mm(app.config, 'env', 'prod');
-      request(app.callback())
+      return request(app.callback())
       .get('/?status=500')
       .expect(500)
-      .expect(/Internal Server Error/, done);
+      .expect(/Internal Server Error/);
     });
   });
 
   describe('app.errorpage.url=/500', () => {
     let app;
-    before(done => {
+    before(() => {
       app = app = mm.app({
         baseDir: 'onerror-custom-500',
       });
-      app.ready(done);
+      return app.ready();
     });
 
-    it('should redirect to error page', done => {
-      done = pedding(3, done);
+    it('should redirect to error page', function* () {
       mm(app.config, 'env', 'prod');
 
-      request(app.callback())
+      yield request(app.callback())
       .get('/mockerror')
       .expect('Location', '/500?real_status=500')
-      .expect(302, done);
+      .expect(302);
 
-      request(app.callback())
+      yield request(app.callback())
       .get('/mock4xx')
       .expect('Location', '/500?real_status=400')
-      .expect(302, done);
+      .expect(302);
 
-      request(app.callback())
+      yield request(app.callback())
       .get('/500')
       .expect('hi, this custom 500 page')
-      .expect(500, done);
+      .expect(500);
     });
   });
 
   describe('onerror.ctx.error', () => {
     let app;
-    before(done => {
+    before(() => {
       app = mm.app({
         baseDir: 'onerror-ctx-error',
       });
-      app.ready(done);
+      return app.ready();
     });
 
-    it('should 500', done => {
-      request(app.callback())
+    it('should 500', () => {
+      return request(app.callback())
       .get('/error')
       .expect(500)
-      .end((err, res) => {
-        should.not.exist(err);
-        res.text.should.containEql('you can`t get userId.');
-        done();
-      });
+      .expect(/you can`t get userId\./);
     });
   });
 
   describe('appErrorFilter', () => {
     let app;
-    before(done => {
+    before(() => {
       app = mm.app({
         baseDir: 'custom-listener-onerror',
       });
-      app.ready(done);
+      return app.ready();
     });
 
-    it('should ignore error log', done => {
+    it('should ignore error log', () => {
       mm(app.logger, 'log', () => {
         throw new Error('should not excute');
       });
 
-      request(app.callback())
+      return request(app.callback())
       .get('/?name=IgnoreError')
-      .expect(500, done);
+      .expect(500);
     });
 
     it('should custom log error log', done => {
@@ -232,7 +223,8 @@ describe('test/lib/plugins/onerror.test.js', () => {
 
       request(app.callback())
       .get('/?name=CustomError')
-      .expect(500, done);
+      .expect(500)
+      .then(() => done(), done);
     });
 
     it('should default log error', done => {
@@ -244,7 +236,8 @@ describe('test/lib/plugins/onerror.test.js', () => {
 
       request(app.callback())
       .get('/?name=OtherError')
-      .expect(500, done);
+      .expect(500)
+      .then(() => done(), done);
     });
   });
 });
