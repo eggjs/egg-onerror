@@ -16,7 +16,8 @@
   },
   "keywords": [
     "egg",
-    "plugin"
+    "plugin",
+    "onerror"
   ],
   "dependencies": {
     "escape-html": "^1.0.3",
@@ -43,7 +44,7 @@
     "test": "npm run lint && npm run test-local",
     "test-local": "egg-bin test",
     "cov": "egg-bin cov",
-    "lint": "eslint --ext js . --fix",
+    "lint": "eslint --ext js --fix test config *.js",
     "ci": "npm run lint && npm run cov",
     "autod": "autod"
   },
