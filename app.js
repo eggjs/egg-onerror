@@ -11,34 +11,27 @@ module.exports = app => {
   // logging error
   const appErrorFilter = app.config.onerror.appErrorFilter;
   app.on('error', (err, ctx) => {
-    if (appErrorFilter && !appErrorFilter(err, ctx || app.createAnonymousContext())) return;
+    ctx = ctx || app.createAnonymousContext();
+    if (appErrorFilter && !appErrorFilter(err, ctx)) return;
 
     const status = detectStatus(err);
     // 5xx
     if (status >= 500) {
-      if (ctx) {
-        try {
-          ctx.logger.error(err);
-        } catch (ex) {
-          app.logger.error(err);
-          app.logger.error(ex);
-        }
-      } else {
+      try {
+        ctx.logger.error(err);
+      } catch (ex) {
         app.logger.error(err);
+        app.logger.error(ex);
       }
       return;
     }
 
     // 4xx
-    if (ctx) {
-      try {
-        ctx.logger.warn(err);
-      } catch (ex) {
-        app.logger.warn(err);
-        app.logger.warn(ex);
-      }
-    } else {
+    try {
+      ctx.logger.warn(err);
+    } catch (ex) {
       app.logger.warn(err);
+      app.logger.error(ex);
     }
   });
 
@@ -138,8 +131,7 @@ function detectStatus(err) {
   // detect status
   let status = err.status || 500;
   if (status < 200) {
-    // invalid status consider as 500
-    // http://gitlab.alipay-inc.com/chair/chair/issues/757
+    // invalid status consider as 500, like urllib will return -1 status
     status = 500;
   }
   return status;

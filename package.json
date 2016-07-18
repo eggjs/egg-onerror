@@ -16,7 +16,8 @@
   },
   "keywords": [
     "egg",
-    "plugin"
+    "plugin",
+    "onerror"
   ],
   "dependencies": {
     "escape-html": "^1.0.3",
