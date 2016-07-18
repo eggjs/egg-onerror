@@ -32,13 +32,13 @@ module.exports = app => {
     // 4xx
     if (ctx) {
       try {
-        ctx.coreLogger.warn(err);
+        ctx.logger.warn(err);
       } catch (ex) {
-        app.coreLogger.warn(err);
-        app.coreLogger.warn(ex);
+        app.logger.warn(err);
+        app.logger.warn(ex);
       }
     } else {
-      app.coreLogger.warn(err);
+      app.logger.warn(err);
     }
   });
 
