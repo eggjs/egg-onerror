@@ -122,24 +122,26 @@ describe('test/lib/plugins/onerror.test.js', () => {
     .expect(302);
   });
 
-  it('should log warn 4xx', function* () {
-    rimraf.sync(path.join(__dirname, 'fixtrues/onerror/logs'));
+  if (process.platform !== 'win32') {
+    it('should log warn 4xx', function* () {
+      rimraf.sync(path.join(__dirname, 'fixtrues/onerror/logs'));
 
-    const app = mm.app({
-      baseDir: 'onerror',
+      const app = mm.app({
+        baseDir: 'onerror',
+      });
+      yield app.ready();
+      yield request(app.callback())
+      .post('/body_parser')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({ foo: new Buffer(1024 * 100).fill(1).toString() })
+      .expect(/request entity too large/)
+      .expect(413);
+      app.close();
+
+      const warnLog = path.join(__dirname, 'fixtures/onerror/logs/onerror/onerror-web.log');
+      fs.readFileSync(warnLog, 'utf8').should.match(/POST \/body_parser] nodejs\.Error: request entity too large/);
     });
-    yield app.ready();
-    yield request(app.callback())
-    .post('/body_parser')
-    .set('Content-Type', 'application/x-www-form-urlencoded')
-    .send({ foo: new Buffer(1024 * 100).fill(1).toString() })
-    .expect(/request entity too large/)
-    .expect(413);
-    app.close();
-
-    const warnLog = path.join(__dirname, 'fixtures/onerror/logs/onerror/onerror-web.log');
-    fs.readFileSync(warnLog, 'utf8').should.match(/POST \/body_parser] nodejs\.Error: request entity too large/);
-  });
+  }
 
   describe('no errorpage', () => {
     let app;
