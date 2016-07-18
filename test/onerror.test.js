@@ -16,7 +16,21 @@ describe('test/lib/plugins/onerror.test.js', () => {
     return app.ready();
   });
 
+  after(() => app.close());
+
   afterEach(mm.restore);
+
+  it('should handle error not in the req/res cycle with no ctx', function* () {
+    const app = mm.app({
+      baseDir: 'mock-test-error',
+    });
+    yield app.ready();
+    const err = new Error('mock test error');
+    app.emit('error', err, null);
+    err.status = 400;
+    app.emit('error', err, null);
+    app.close();
+  });
 
   it('should handle status:-1 as status:500', () => {
     return request(app.callback())
@@ -108,29 +122,26 @@ describe('test/lib/plugins/onerror.test.js', () => {
     .expect(302);
   });
 
-  it('should log warn 4xx', function* () {
-    rimraf.sync(path.join(__dirname, 'fixtrues/onerror/logs'));
+  if (process.platform !== 'win32') {
+    it('should log warn 4xx', function* () {
+      rimraf.sync(path.join(__dirname, 'fixtrues/onerror/logs'));
 
-    const app = mm.app({
-      baseDir: 'onerror',
+      const app = mm.app({
+        baseDir: 'onerror',
+      });
+      yield app.ready();
+      yield request(app.callback())
+      .post('/body_parser')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({ foo: new Buffer(1024 * 100).fill(1).toString() })
+      .expect(/request entity too large/)
+      .expect(413);
+      app.close();
+
+      const warnLog = path.join(__dirname, 'fixtures/onerror/logs/onerror/onerror-web.log');
+      fs.readFileSync(warnLog, 'utf8').should.match(/POST \/body_parser] nodejs\.Error: request entity too large/);
     });
-    yield app.ready();
-    yield request(app.callback())
-    .post('/body_parser')
-    .set('Content-Type', 'application/x-www-form-urlencoded')
-    .send({ foo: new Buffer(1024 * 100).fill(1).toString() })
-    .expect(/request entity too large/)
-    .expect(413);
-    const warnLog = path.join(__dirname, 'fixtures/onerror/logs/onerror/onerror-web.log');
-    fs.readFileSync(warnLog, 'utf8').should.match(/POST \/body_parser] nodejs.Error: request entity too large/);
-  });
-
-  it('should handle error not in the req/res cycle with no ctx', () => {
-    const err = new Error('test error');
-    app.emit('error', err, null);
-    err.status = 400;
-    app.emit('error', err, null);
-  });
+  }
 
   describe('no errorpage', () => {
     let app;
@@ -140,6 +151,8 @@ describe('test/lib/plugins/onerror.test.js', () => {
       });
       return app.ready();
     });
+    after(() => app.close());
+
     it('should display 500 Internal Server Error', () => {
       mm(app.config, 'env', 'prod');
       return request(app.callback())
@@ -157,6 +170,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
       });
       return app.ready();
     });
+    after(() => app.close());
 
     it('should redirect to error page', function* () {
       mm(app.config, 'env', 'prod');
@@ -186,6 +200,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
       });
       return app.ready();
     });
+    after(() => app.close());
 
     it('should 500', () => {
       return request(app.callback())
@@ -203,6 +218,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
       });
       return app.ready();
     });
+    after(() => app.close());
 
     it('should ignore error log', () => {
       mm(app.logger, 'log', () => {
