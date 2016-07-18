@@ -145,7 +145,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
       return request(app.callback())
       .get('/?status=500')
       .expect(500)
-      .expect(/Internal Server Error/);
+      .expect(/Internal Server Error, real status: 500/);
     });
   });
 

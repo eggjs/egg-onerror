@@ -67,7 +67,7 @@ module.exports = app => {
           return this.redirect(errorPageUrl + statusQuery);
         }
         this.status = 500;
-        this.body = '<h2>Internal Server Error</h2>';
+        this.body = `<h2>Internal Server Error, real status: ${status}</h2>`;
         return;
       }
       // provide detail error message in local env
