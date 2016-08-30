@@ -8,7 +8,7 @@ const rimraf = require('rimraf');
 const path = require('path');
 require('should');
 
-describe('test/lib/plugins/onerror.test.js', () => {
+describe('test/onerror.test.js', () => {
   let app;
   before(() => {
     mm.env('local');
@@ -68,6 +68,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   });
 
   it('should return err.stack', () => {
+    app.mockCtoken();
     return request(app.callback())
     .get('/user.json')
     .expect(/"message":"test error","stack":/)
@@ -75,6 +76,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   });
 
   it('should return err.stack when unittest', () => {
+    app.mockCtoken();
     mm(app.config, 'env', 'unittest');
     return request(app.callback())
     .get('/user.json')
@@ -83,6 +85,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   });
 
   it('should return err status message', () => {
+    app.mockCtoken();
     mm(app.config, 'env', 'prod');
     return request(app.callback())
     .get('/user.json')
@@ -91,6 +94,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   });
 
   it('should return err.errors', () => {
+    app.mockCtoken();
     return request(app.callback())
     .get('/user.json?status=400&errors=test')
     .expect(/test/)
@@ -98,6 +102,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   });
 
   it('should return parsing json error', () => {
+    app.mockCsrf();
     return request(app.callback())
     .post('/test?status=400')
     .send({ test: 1 })
