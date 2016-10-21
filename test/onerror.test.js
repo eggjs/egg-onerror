@@ -2,11 +2,12 @@
 
 const fs = require('fs');
 const pedding = require('pedding');
-const request = require('supertest-as-promised');
+const request = require('supertest');
 const mm = require('egg-mock');
 const rimraf = require('rimraf');
 const path = require('path');
-require('should');
+const assert = require('assert');
+
 
 describe('test/lib/plugins/onerror.test.js', () => {
   let app;
@@ -139,7 +140,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
       app.close();
 
       const warnLog = path.join(__dirname, 'fixtures/onerror/logs/onerror/onerror-web.log');
-      fs.readFileSync(warnLog, 'utf8').should.match(/POST \/body_parser] nodejs\.Error: request entity too large/);
+      assert(/POST \/body_parser] nodejs\.Error: request entity too large/.test(fs.readFileSync(warnLog, 'utf8')));
     });
   }
 
@@ -233,7 +234,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
     it('should custom log error log', done => {
       done = pedding(done, 2);
       mm(app.logger, 'error', err => {
-        err.should.equal('error happened');
+        assert.equal(err, 'error happened');
         done();
       });
 
@@ -246,7 +247,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
     it('should default log error', done => {
       done = pedding(done, 2);
       mm(app.logger, 'log', (LEVEL, args) => {
-        args[0].name.should.equal('OtherError');
+        assert.equal(args[0].name, 'OtherError');
         done();
       });
 

@@ -21,21 +21,19 @@
   ],
   "dependencies": {
     "escape-html": "^1.0.3",
-    "koa-onerror": "^2.0.0"
+    "koa-onerror": "^3.0.0"
   },
   "devDependencies": {
-    "autod": "^2.6.1",
-    "egg": "*",
-    "egg-bin": "^1.0.2",
+    "autod": "^2.7.1",
+    "egg": "^0.2.1",
+    "egg-bin": "^1.5.1",
     "egg-ci": "^1.0.3",
-    "egg-mock": "*",
-    "eslint": "^3.1.0",
+    "egg-mock": "^0.0.5",
+    "eslint": "^3.8.1",
     "eslint-config-egg": "^3.1.0",
     "pedding": "^1.0.0",
-    "rimraf": "^2.5.3",
-    "should": "^9.0.2",
-    "supertest": "^1.2.0",
-    "supertest-as-promised": "^3.2.0"
+    "rimraf": "^2.5.4",
+    "supertest": "^2.0.1"
   },
   "engines": {
     "node": ">=4.0.0"
