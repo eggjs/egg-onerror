@@ -6,7 +6,7 @@ const request = require('supertest');
 const mm = require('egg-mock');
 const rimraf = require('rimraf');
 const path = require('path');
-const assert = require('assert');
+const assert = require('power-assert');
 
 
 describe('test/lib/plugins/onerror.test.js', () => {
@@ -255,6 +255,21 @@ describe('test/lib/plugins/onerror.test.js', () => {
       .get('/?name=OtherError')
       .expect(500)
       .then(() => done(), done);
+    });
+  });
+
+  describe('agent emit error', () => {
+    let app;
+    before(done => {
+      app = mm.cluster({
+        baseDir: 'agent-error',
+      });
+      setTimeout(done, 5000);
+    });
+    after(() => app.close());
+
+    it('should log error', () => {
+      assert(/nodejs.Error: emit error/.test(app.stderr));
     });
   });
 });
