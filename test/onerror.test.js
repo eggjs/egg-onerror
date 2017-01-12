@@ -6,7 +6,7 @@ const request = require('supertest');
 const mm = require('egg-mock');
 const rimraf = require('rimraf');
 const path = require('path');
-const assert = require('power-assert');
+const assert = require('assert');
 
 
 describe('test/lib/plugins/onerror.test.js', () => {
@@ -36,7 +36,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   it('should handle status:-1 as status:500', () => {
     return request(app.callback())
     .get('/?status=-1')
-    .expect(/<h1 class="box">Error in \/\?status=\-1<\/h1>/)
+    .expect(/<h1 class="box">Error in \/\?status=-1<\/h1>/)
     .expect(500);
   });
 
@@ -71,6 +71,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   it('should return err.stack', () => {
     return request(app.callback())
     .get('/user.json')
+    .set('Accept', 'application/json')
     .expect(/"message":"test error","stack":/)
     .expect(500);
   });
@@ -79,6 +80,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
     mm(app.config, 'env', 'unittest');
     return request(app.callback())
     .get('/user.json')
+    .set('Accept', 'application/json')
     .expect(/"message":"test error","stack":/)
     .expect(500);
   });
@@ -87,6 +89,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
     mm(app.config, 'env', 'prod');
     return request(app.callback())
     .get('/user.json')
+    .set('Accept', 'application/json')
     .expect({ message: 'Internal Server Error' })
     .expect(500);
   });
@@ -94,6 +97,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   it('should return err.errors', () => {
     return request(app.callback())
     .get('/user.json?status=400&errors=test')
+    .set('Accept', 'application/json')
     .expect(/test/)
     .expect(400);
   });
