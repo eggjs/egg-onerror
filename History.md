@@ -1,4 +1,10 @@
 
+1.2.0 / 2017-01-13
+==================
+
+  * feat: support options.accepts
+  * refactor: remove accpetJSON
+
 1.1.0 / 2016-11-09
 ==================
 
