@@ -76,6 +76,18 @@ describe('test/lib/plugins/onerror.test.js', () => {
     .expect(500);
   });
 
+  it('should support custom accpets return err.stack', () => {
+    mm(app.config.onerror, 'accepts', ctx => {
+      if (ctx.get('x-request-with') === 'XMLHttpRequest') return 'json';
+      return 'html';
+    });
+    return request(app.callback())
+    .get('/user.json')
+    .set('x-request-with', 'XMLHttpRequest')
+    .expect(/"message":"test error","stack":/)
+    .expect(500);
+  });
+
   it('should return err.stack when unittest', () => {
     mm(app.config, 'env', 'unittest');
     return request(app.callback())

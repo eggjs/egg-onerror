@@ -20,9 +20,7 @@
 [download-image]: https://img.shields.io/npm/dm/egg-onerror.svg?style=flat-square
 [download-url]: https://npmjs.org/package/egg-onerror
 
-<!--
-Description here.
--->
+Default error handling plugin for egg.
 
 ## Install
 
@@ -32,9 +30,18 @@ $ npm i egg-onerror
 
 ## Usage
 
-<!--
-Usage, configuration and example here.
--->
+`egg-onerror` is on by default in egg. But you still can configure its properties to fits your scenarios.
+
+- `errorPageUrl: String` - If user request html pages in production environment and unexpected error happened, it will redirect user to `errorPageUrl`.
+- `accepts: Function` - detect user's request accpet `json` or `html`.
+
+```js
+// an accept detect function that mark all request with `x-request-with=XMLHttpRequest` header accepts json.
+function accpets(ctx) {
+  if (ctx.get('x-request-with') === 'XMLHttpRequest') return 'json';
+  return 'html';
+}
+```
 
 ## Questions & Suggestions
 

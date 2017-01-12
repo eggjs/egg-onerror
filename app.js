@@ -9,10 +9,10 @@ const escapeHTML = require('escape-html');
 
 module.exports = app => {
   // logging error
-  const appErrorFilter = app.config.onerror.appErrorFilter;
+  const config = app.config.onerror;
   app.on('error', (err, ctx) => {
     ctx = ctx || app.createAnonymousContext();
-    if (appErrorFilter && !appErrorFilter(err, ctx)) return;
+    if (config.appErrorFilter && !config.appErrorFilter(err, ctx)) return;
 
     const status = detectStatus(err);
     // 5xx
@@ -36,21 +36,17 @@ module.exports = app => {
   });
 
   onerror(app, {
+    // support customize accepts function
     accepts() {
-      if (this.response.type && this.response.type.indexOf('json') >= 0) {
-        return 'json';
-      }
-      if (this.accepts('html', 'text', 'json') === 'json') {
-        return 'json';
-      }
-      return 'html';
+      const fn = config.accepts || accepts;
+      return fn(this);
     },
 
     html(err) {
       const status = detectStatus(err);
       const code = err.code || err.type;
       let message = detectErrorMessage(this, err);
-      const errorPageUrl = this.app.config.onerror.errorPageUrl;
+      const errorPageUrl = config.errorPageUrl;
       // keep the real response status
       this.realStatus = status;
       if (code) {
@@ -138,6 +134,16 @@ function detectStatus(err) {
     status = 500;
   }
   return status;
+}
+
+function accepts(ctx) {
+  if (ctx.response.type && ctx.response.type.indexOf('json') >= 0) {
+    return 'json';
+  }
+  if (ctx.accepts('html', 'text', 'json') === 'json') {
+    return 'json';
+  }
+  return 'html';
 }
 
 function isProd(app) {
