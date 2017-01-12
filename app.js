@@ -37,7 +37,10 @@ module.exports = app => {
 
   onerror(app, {
     accepts() {
-      if (this.acceptJSON) {
+      if (this.response.type && this.response.type.indexOf('json') >= 0) {
+        return 'json';
+      }
+      if (this.accepts('html', 'text', 'json') === 'json') {
         return 'json';
       }
       return 'html';
