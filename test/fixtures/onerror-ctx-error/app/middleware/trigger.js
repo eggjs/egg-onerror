@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function() {
+module.exports = () => {
   return function* (next) {
     yield next;
     this.logger.info('log something, then error happend.');

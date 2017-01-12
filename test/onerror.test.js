@@ -8,11 +8,11 @@ const rimraf = require('rimraf');
 const path = require('path');
 const assert = require('assert');
 
-
-describe('test/lib/plugins/onerror.test.js', () => {
+describe('test/onerror.test.js', () => {
   let app;
   before(() => {
     mm.env('local');
+    mm.consoleLevel('NONE');
     app = mm.app({ baseDir: 'onerror' });
     return app.ready();
   });
@@ -22,6 +22,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   afterEach(mm.restore);
 
   it('should handle error not in the req/res cycle with no ctx', function* () {
+    mm.consoleLevel('NONE');
     const app = mm.app({
       baseDir: 'mock-test-error',
     });
@@ -142,7 +143,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   if (process.platform !== 'win32') {
     it('should log warn 4xx', function* () {
       rimraf.sync(path.join(__dirname, 'fixtrues/onerror/logs'));
-
+      mm.consoleLevel('NONE');
       const app = mm.app({
         baseDir: 'onerror',
       });
@@ -163,6 +164,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   describe('no errorpage', () => {
     let app;
     before(() => {
+      mm.consoleLevel('NONE');
       app = app = mm.app({
         baseDir: 'onerror-no-errorpage',
       });
@@ -182,6 +184,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   describe('app.errorpage.url=/500', () => {
     let app;
     before(() => {
+      mm.consoleLevel('NONE');
       app = app = mm.app({
         baseDir: 'onerror-custom-500',
       });
@@ -212,6 +215,7 @@ describe('test/lib/plugins/onerror.test.js', () => {
   describe('onerror.ctx.error', () => {
     let app;
     before(() => {
+      mm.consoleLevel('NONE');
       app = mm.app({
         baseDir: 'onerror-ctx-error',
       });
@@ -221,15 +225,16 @@ describe('test/lib/plugins/onerror.test.js', () => {
 
     it('should 500', () => {
       return request(app.callback())
-      .get('/error')
-      .expect(500)
-      .expect(/you can`t get userId\./);
+        .get('/error')
+        .expect(500)
+        .expect(/you can`t get userId\./);
     });
   });
 
   describe('appErrorFilter', () => {
     let app;
     before(() => {
+      mm.consoleLevel('NONE');
       app = mm.app({
         baseDir: 'custom-listener-onerror',
       });
