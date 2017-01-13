@@ -143,6 +143,10 @@ function accepts(ctx) {
   if (ctx.accepts('html', 'text', 'json') === 'json') {
     return 'json';
   }
+  // request url match *.json
+  if (ctx.path.endsWith('.json')) {
+    return 'json';
+  }
   return 'html';
 }
 
