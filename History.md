@@ -1,4 +1,9 @@
 
+1.2.2 / 2017-01-13
+==================
+
+  * fix: should keep support `*.json` ext to detect response type (#10)
+
 1.2.1 / 2017-01-13
 ==================
 
