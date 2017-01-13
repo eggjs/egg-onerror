@@ -69,12 +69,27 @@ describe('test/onerror.test.js', () => {
     .expect(400);
   });
 
-  it('should return err.stack', () => {
+  it('should return error json format when Accept is json', () => {
     return request(app.callback())
-    .get('/user.json')
-    .set('Accept', 'application/json')
-    .expect(/"message":"test error","stack":/)
-    .expect(500);
+      .get('/user')
+      .set('Accept', 'application/json')
+      .expect(res => {
+        assert(res.body);
+        assert(res.body.message === 'test error');
+        assert(res.body.stack.includes('Error: test error'));
+      })
+      .expect(500);
+  });
+
+  it('should return error json format when request path match *.json', () => {
+    return request(app.callback())
+      .get('/user.json')
+      .expect(res => {
+        assert(res.body);
+        assert(res.body.message === 'test error');
+        assert(res.body.stack.includes('Error: test error'));
+      })
+      .expect(500);
   });
 
   it('should support custom accpets return err.stack', () => {
