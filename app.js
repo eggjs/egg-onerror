@@ -137,16 +137,7 @@ function detectStatus(err) {
 }
 
 function accepts(ctx) {
-  if (ctx.response.type && ctx.response.type.indexOf('json') >= 0) {
-    return 'json';
-  }
-  if (ctx.accepts('html', 'text', 'json') === 'json') {
-    return 'json';
-  }
-  // request url match *.json
-  if (ctx.path.endsWith('.json')) {
-    return 'json';
-  }
+  if (ctx.acceptJSON) return 'json';
   return 'html';
 }
 
