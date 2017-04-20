@@ -21,8 +21,10 @@
     "onerror"
   ],
   "dependencies": {
-    "escape-html": "^1.0.3",
-    "koa-onerror": "^3.0.1"
+    "cookie": "^0.3.1",
+    "koa-onerror": "^3.0.1",
+    "mustache": "^2.3.0",
+    "stack-trace": "0.0.9"
   },
   "devDependencies": {
     "autod": "^2.7.1",

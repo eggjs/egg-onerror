@@ -37,7 +37,7 @@ describe('test/onerror.test.js', () => {
   it('should handle status:-1 as status:500', () => {
     return request(app.callback())
     .get('/?status=-1')
-    .expect(/<h1 class="box">Error in \/\?status=-1<\/h1>/)
+    .expect(/\/\?status=-1/)
     .expect(500);
   });
 
