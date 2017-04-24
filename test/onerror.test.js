@@ -37,7 +37,7 @@ describe('test/onerror.test.js', () => {
   it('should handle status:-1 as status:500', () => {
     return request(app.callback())
     .get('/?status=-1')
-    .expect(/\/\?status=-1/)
+    .expect(/<h1 class="box">Error in &#x2F;\?status&#x3D;-1<\/h1>/)
     .expect(500);
   });
 
@@ -51,7 +51,7 @@ describe('test/onerror.test.js', () => {
   it('should handle escape xss', () => {
     return request(app.callback())
     .get('/?message=<script></script>')
-    .expect(/&lt;script&gt;&lt;\/script&gt;/)
+    .expect(/&lt;script&gt;&lt;&#x2F;script&gt;/)
     .expect(500);
   });
 
@@ -242,7 +242,7 @@ describe('test/onerror.test.js', () => {
       return request(app.callback())
         .get('/error')
         .expect(500)
-        .expect(/you can`t get userId\./);
+        .expect(/you can&#x60;t get userId\./);
     });
   });
 

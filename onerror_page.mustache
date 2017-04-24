@@ -365,10 +365,12 @@
     }
     ::selection {
       text-shadow: none;
+      color: #fff;
       background: #98d8b7;
     }
     ::-moz-selection {
       text-shadow: none;
+      color: #fff;
       background: #98d8b7;
     }
     .error-page {
@@ -379,13 +381,12 @@
     }
     .error-logo {
       position: absolute;
-      top: -38px;
+      top: -15px;
       right: 0px;
     }
     .error-stack {
       background: #f1f1f1;
-      height: 698px;
-      padding: 140px 80px 80px;
+      padding: 140px 80px 20px;
       box-sizing: border-box;
     }
     .error-status {
@@ -405,17 +406,24 @@
       font-weight: 300;
       margin-bottom: 15px;
     }
-    .error-message {
-      color: #db5461;
-      font-weight: 600;
-      font-size: 40px;
-      margin-left: 5px;
-    }
     .error-title {
       border-bottom: 1px solid #e0e0e0;
       padding-bottom: 40px;
       margin-bottom: 20px;
       margin-top: 48px;
+    }
+    .error-title .box {
+      color: #db5461;
+      font-weight: 500;
+      font-size: 18px;
+      margin-left: 5px;
+    }
+    .error-title .context {
+      color: #db5461;
+      font-weight: 600;
+      font-size: 40px;
+      margin-left: 5px;
+      margin-top: 30px;
     }
     .error-frames {
       display: flex;
@@ -564,7 +572,8 @@
     <section class="error-stack">
       <h3 class="error-status">{{ status }}</h3>
       <div class="error-title">
-        <h2 class="error-message">Error: {{ message }} </h2>
+        <h1 class="box">{{ name }} in {{ request.url }}</h1>
+        <div class="context">{{ message }}</div>
       </div>
 
       <img class="error-logo" src="https://zos.alipayobjects.com/rmsportal/JFKAMfmPehWfhBPdCjrw.svg"/>
@@ -572,7 +581,7 @@
       <div class="error-frames">
         <div class="frame-preview is-hidden">
           <div id="frame-file"></div>
-          <div id="frame-code"><pre class="line-numbers"><code class="language-js" id="code-drop"></code></pre></div>
+          <div id="frame-code"><pre class="line-numbers"><code id="code-drop"></code></pre></div>
           <div id="frame-method"></div>
         </div>
 
@@ -597,6 +606,7 @@
                   data-line="{{line}}"
                   data-file="{{file}}"
                   data-method="{{method}}"
+                  data-extname="{{extname}}"
                   data-line-column="{{line}}:{{column}}"
                   >{{ context.pre }}
 {{ context.line }}
@@ -661,7 +671,7 @@
         <div class="tr">
           <div class="td title"> config </div>
           <div class="td content code">
-            <pre class="line-numbers"><code class="language-js">{{ appInfo.config }}</code></pre>
+            <pre class="line-numbers"><code class="language-json">{{ appInfo.config }}</code></pre>
           </div>
         </div>
       </<div>
@@ -673,58 +683,69 @@ Prism.languages.markup={comment:/<!--[\w\W]*?-->/,prolog:/<\?[\w\W]+?\?>/,doctyp
 Prism.languages.css={comment:/\/\*[\w\W]*?\*\//,atrule:{pattern:/@[\w-]+?.*?(;|(?=\s*\{))/i,inside:{rule:/@[\w-]+/}},url:/url\((?:(["'])(\\(?:\r\n|[\w\W])|(?!\1)[^\\\r\n])*\1|.*?)\)/i,selector:/[^\{\}\s][^\{\};]*?(?=\s*\{)/,string:{pattern:/("|')(\\(?:\r\n|[\w\W])|(?!\1)[^\\\r\n])*\1/,greedy:!0},property:/(\b|\B)[\w-]+(?=\s*:)/i,important:/\B!important\b/i,"function":/[-a-z0-9]+(?=\()/i,punctuation:/[(){};:]/},Prism.languages.css.atrule.inside.rest=Prism.util.clone(Prism.languages.css),Prism.languages.markup&&(Prism.languages.insertBefore("markup","tag",{style:{pattern:/(<style[\w\W]*?>)[\w\W]*?(?=<\/style>)/i,lookbehind:!0,inside:Prism.languages.css,alias:"language-css"}}),Prism.languages.insertBefore("inside","attr-value",{"style-attr":{pattern:/\s*style=("|').*?\1/i,inside:{"attr-name":{pattern:/^\s*style/i,inside:Prism.languages.markup.tag.inside},punctuation:/^\s*=\s*['"]|['"]\s*$/,"attr-value":{pattern:/.+/i,inside:Prism.languages.css}},alias:"language-css"}},Prism.languages.markup.tag));
 Prism.languages.clike={comment:[{pattern:/(^|[^\\])\/\*[\w\W]*?\*\//,lookbehind:!0},{pattern:/(^|[^\\:])\/\/.*/,lookbehind:!0}],string:{pattern:/(["'])(\\(?:\r\n|[\s\S])|(?!\1)[^\\\r\n])*\1/,greedy:!0},"class-name":{pattern:/((?:\b(?:class|interface|extends|implements|trait|instanceof|new)\s+)|(?:catch\s+\())[a-z0-9_\.\\]+/i,lookbehind:!0,inside:{punctuation:/(\.|\\)/}},keyword:/\b(if|else|while|do|for|return|in|instanceof|function|new|try|throw|catch|finally|null|break|continue)\b/,"boolean":/\b(true|false)\b/,"function":/[a-z0-9_]+(?=\()/i,number:/\b-?(?:0x[\da-f]+|\d*\.?\d+(?:e[+-]?\d+)?)\b/i,operator:/--?|\+\+?|!=?=?|<=?|>=?|==?=?|&&?|\|\|?|\?|\*|\/|~|\^|%/,punctuation:/[{}[\];(),.:]/};
 Prism.languages.javascript=Prism.languages.extend("clike",{keyword:/\b(as|async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|set|static|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b/,number:/\b-?(0x[\dA-Fa-f]+|0b[01]+|0o[0-7]+|\d*\.?\d+([Ee][+-]?\d+)?|NaN|Infinity)\b/,"function":/[_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*(?=\()/i,operator:/--?|\+\+?|!=?=?|<=?|>=?|==?=?|&&?|\|\|?|\?|\*\*?|\/|~|\^|%|\.{3}/}),Prism.languages.insertBefore("javascript","keyword",{regex:{pattern:/(^|[^\/])\/(?!\/)(\[.+?]|\\.|[^\/\\\r\n])+\/[gimyu]{0,5}(?=\s*($|[\r\n,.;})]))/,lookbehind:!0,greedy:!0}}),Prism.languages.insertBefore("javascript","string",{"template-string":{pattern:/`(?:\\\\|\\?[^\\])*?`/,greedy:!0,inside:{interpolation:{pattern:/\$\{[^}]+\}/,inside:{"interpolation-punctuation":{pattern:/^\$\{|\}$/,alias:"punctuation"},rest:Prism.languages.javascript}},string:/[\s\S]+/}}}),Prism.languages.markup&&Prism.languages.insertBefore("markup","tag",{script:{pattern:/(<script[\w\W]*?>)[\w\W]*?(?=<\/script>)/i,lookbehind:!0,inside:Prism.languages.javascript,alias:"language-javascript"}}),Prism.languages.js=Prism.languages.javascript;
+Prism.languages.json={property:/"(?:\\.|[^\\"])*"(?=\s*:)/gi,string:/"(?!:)(?:\\.|[^\\"])*"(?!:)/g,number:/\b-?(0x[\dA-Fa-f]+|\d*\.?\d+([Ee][+-]?\d+)?)\b/g,punctuation:/[{}[\]);,]/g,operator:/:/g,"boolean":/\b(true|false)\b/gi,"null":/\bnull\b/gi},Prism.languages.jsonp=Prism.languages.json;
+Prism.languages.typescript=Prism.languages.extend("javascript",{keyword:/\b(as|async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|set|static|super|switch|this|throw|try|typeof|var|void|while|with|yield|false|true|module|declare|constructor|string|Function|any|number|boolean|Array|enum|symbol|namespace|abstract|require|type)\b/}),Prism.languages.ts=Prism.languages.typescript;
 !function(){function e(e,t){return Array.prototype.slice.call((t||document).querySelectorAll(e))}function t(e,t){return t=" "+t+" ",(" "+e.className+" ").replace(/[\n\t]/g," ").indexOf(t)>-1}function n(e,n,i){for(var o,a=n.replace(/\s+/g,"").split(","),l=+e.getAttribute("data-line-offset")||0,d=r()?parseInt:parseFloat,c=d(getComputedStyle(e).lineHeight),s=0;o=a[s++];){o=o.split("-");var u=+o[0],m=+o[1]||u,h=document.createElement("div");h.textContent=Array(m-u+2).join(" \n"),h.setAttribute("aria-hidden","true"),h.className=(i||"")+" line-highlight",t(e,"line-numbers")||(h.setAttribute("data-start",u),m>u&&h.setAttribute("data-end",m)),h.style.top=(u-l-1)*c+"px",t(e,"line-numbers")?e.appendChild(h):(e.querySelector("code")||e).appendChild(h)}}function i(){var t=location.hash.slice(1);e(".temporary.line-highlight").forEach(function(e){e.parentNode.removeChild(e)});var i=(t.match(/\.([\d,-]+)$/)||[,""])[1];if(i&&!document.getElementById(t)){var r=t.slice(0,t.lastIndexOf(".")),o=document.getElementById(r);o&&(o.hasAttribute("data-line")||o.setAttribute("data-line",""),n(o,i,"temporary "),document.querySelector(".temporary.line-highlight").scrollIntoView())}}if("undefined"!=typeof self&&self.Prism&&self.document&&document.querySelector){var r=function(){var e;return function(){if("undefined"==typeof e){var t=document.createElement("div");t.style.fontSize="13px",t.style.lineHeight="1.5",t.style.padding=0,t.style.border=0,t.innerHTML="&nbsp;<br />&nbsp;",document.body.appendChild(t),e=38===t.offsetHeight,document.body.removeChild(t)}return e}}(),o=0;Prism.hooks.add("complete",function(t){var r=t.element.parentNode,a=r&&r.getAttribute("data-line");r&&a&&/pre/i.test(r.nodeName)&&(clearTimeout(o),e(".line-highlight",r).forEach(function(e){e.parentNode.removeChild(e)}),n(r,a),o=setTimeout(i,1))}),window.addEventListener&&window.addEventListener("hashchange",i)}}();
 !function(){"undefined"!=typeof self&&self.Prism&&self.document&&Prism.hooks.add("complete",function(e){if(e.code){var t=e.element.parentNode,s=/\s*\bline-numbers\b\s*/;if(t&&/pre/i.test(t.nodeName)&&(s.test(t.className)||s.test(e.element.className))&&!e.element.querySelector(".line-numbers-rows")){s.test(e.element.className)&&(e.element.className=e.element.className.replace(s,"")),s.test(t.className)||(t.className+=" line-numbers");var n,a=e.code.match(/\n(?!$)/g),l=a?a.length+1:1,r=new Array(l+1);r=r.join("<span></span>"),n=document.createElement("span"),n.setAttribute("aria-hidden","true"),n.className="line-numbers-rows",n.innerHTML=r,t.hasAttribute("data-start")&&(t.style.counterReset="linenumber "+(parseInt(t.getAttribute("data-start"),10)-1)),e.element.appendChild(n)}}})}();
-!function(){if("undefined"!=typeof self&&self.Prism&&self.document){var t=[],e={},n=function(){};Prism.plugins.toolbar={};var a=Prism.plugins.toolbar.registerButton=function(n,a){var o;o="function"==typeof a?a:function(t){var e;return"function"==typeof a.onClick?(e=document.createElement("button"),e.type="button",e.addEventListener("click",function(){a.onClick.call(this,t)})):"string"==typeof a.url?(e=document.createElement("a"),e.href=a.url):e=document.createElement("span"),e.textContent=a.text,e},t.push(e[n]=o)},o=Prism.plugins.toolbar.hook=function(a){var o=a.element.parentNode;if(o&&/pre/i.test(o.nodeName)&&!o.classList.contains("code-toolbar")){o.classList.add("code-toolbar");var r=document.createElement("div");r.classList.add("toolbar"),document.body.hasAttribute("data-toolbar-order")&&(t=document.body.getAttribute("data-toolbar-order").split(",").map(function(t){return e[t]||n})),t.forEach(function(t){var e=t(a);if(e){var n=document.createElement("div");n.classList.add("toolbar-item"),n.appendChild(e),r.appendChild(n)}}),o.appendChild(r)}};a("label",function(t){var e=t.element.parentNode;if(e&&/pre/i.test(e.nodeName)&&e.hasAttribute("data-label")){var n,a,o=e.getAttribute("data-label");try{a=document.querySelector("template#"+o)}catch(r){}return a?n=a.content:(e.hasAttribute("data-url")?(n=document.createElement("a"),n.href=e.getAttribute("data-url")):n=document.createElement("span"),n.textContent=o),n}}),Prism.hooks.add("complete",o)}}();
-!function(){if("undefined"!=typeof self&&self.Prism&&self.document){if(!Prism.plugins.toolbar)return console.warn("Show Languages plugin loaded before Toolbar plugin."),void 0;var e={html:"HTML",xml:"XML",svg:"SVG",mathml:"MathML",css:"CSS",clike:"C-like",javascript:"JavaScript",abap:"ABAP",actionscript:"ActionScript",apacheconf:"Apache Configuration",apl:"APL",applescript:"AppleScript",asciidoc:"AsciiDoc",aspnet:"ASP.NET (C#)",autoit:"AutoIt",autohotkey:"AutoHotkey",basic:"BASIC",csharp:"C#",cpp:"C++",coffeescript:"CoffeeScript","css-extras":"CSS Extras",fsharp:"F#",glsl:"GLSL",graphql:"GraphQL",http:"HTTP",inform7:"Inform 7",json:"JSON",latex:"LaTeX",livescript:"LiveScript",lolcode:"LOLCODE",matlab:"MATLAB",mel:"MEL",nasm:"NASM",nginx:"nginx",nsis:"NSIS",objectivec:"Objective-C",ocaml:"OCaml",parigp:"PARI/GP",php:"PHP","php-extras":"PHP Extras",powershell:"PowerShell",properties:".properties",protobuf:"Protocol Buffers",jsx:"React JSX",rest:"reST (reStructuredText)",sas:"SAS",sass:"Sass (Sass)",scss:"Sass (Scss)",sql:"SQL",typescript:"TypeScript",vhdl:"VHDL",vim:"vim",wiki:"Wiki markup",xojo:"Xojo (REALbasic)",yaml:"YAML"};Prism.plugins.toolbar.registerButton("show-language",function(t){var a=t.element.parentNode;if(a&&/pre/i.test(a.nodeName)){var s=a.getAttribute("data-language")||e[t.language]||t.language.substring(0,1).toUpperCase()+t.language.substring(1),r=document.createElement("span");return r.textContent=s,r}})}}();
     </script>
-    <script src="http://zeptojs.com/zepto.min.js"></script>
     <script>
-      Zepto(function ($) {
-        var nativeFramesLength = $('.frame-row.native-frame').length
-        var allFramesLength = $('.frame-row').length
+      (function() {
+        const $ = function(value) { return document.querySelector(value) };
+        const $$ = function(value) { return document.querySelectorAll(value) };
+        var nativeFramesLength = $$('.frame-row.native-frame').length;
+        var allFramesLength = $$('.frame-row').length;
         function filterFrames () {
-          $('.frame-preview').removeClass('is-hidden')
-          var isSelected = $('#frames-filter').prop('checked')
+          $('.frame-preview').classList.remove('is-hidden');
+          var isSelected = $('#frames-filter').checked;
           if (isSelected) {
-            $('.frame-row.native-frame').addClass('force-show')
+            $$('.frame-row.native-frame').forEach(function(node) {
+              node.classList.add('force-show');
+            });
           } else {
-            $('.frame-row.native-frame').removeClass('force-show')
+            $$('.frame-row.native-frame').forEach(function(node) {
+              node.classList.remove('force-show');
+            });
           }
         }
         function displayFirstView () {
           if (nativeFramesLength !== allFramesLength) {
-            $('.frame-preview').removeClass('is-hidden')
+            $('.frame-preview').classList.remove('is-hidden');
           }
         }
         function showFrameContext (frame) {
-          $frameContext = $(frame).find('.frame-context')
-          var $context = $frameContext.html()
-          $context = $context.trim().length === 0 ? 'Missing stack frames' : $context
-          var $line = $frameContext.attr('data-line')
-          var $start = $frameContext.attr('data-start')
-          var $file = $frameContext.attr('data-file')
-          var $method = $frameContext.attr('data-method')
-          var $lineColumn = $frameContext.attr('data-line-column')
-          $('#code-drop').parent('pre').attr('data-line', $line);
-          $('#code-drop').parent('pre').attr('data-start', $start);
-          $('#code-drop').parent('pre').attr('data-line-offset', (Number($start) - 1))
-          $('#code-drop').html($context)
-          $('#frame-file').html($file)
-          $('#frame-method').html($method + '' + $lineColumn)
-          Prism.highlightAll()
+          $frameContext = frame.querySelector('.frame-context');
+          var $context = $frameContext.innerHTML;
+          $context = $context.trim().length === 0 ? 'Missing stack frames' : $context;
+          var $line = $frameContext.getAttribute('data-line');
+          var $start = $frameContext.getAttribute('data-start');
+          var $file = $frameContext.getAttribute('data-file');
+          var $method = $frameContext.getAttribute('data-method');
+          var $lineColumn = $frameContext.getAttribute('data-line-column');
+          var $language = $frameContext.getAttribute('data-extname') || 'js';
+          $('#code-drop').parentNode.setAttribute('data-line', $line);
+          $('#code-drop').parentNode.setAttribute('data-start', $start);
+          $('#code-drop').parentNode.setAttribute('data-language', $language);
+          $('#code-drop').parentNode.setAttribute('data-line-offset', (Number($start) - 1));
+          $('#code-drop').setAttribute('class', 'language-' + $language);
+          $('#code-drop').innerHTML = $context;
+          $('#frame-file').innerHTML = $file;
+          $('#frame-method').innerHTML = $method + '' + $lineColumn;
+
+          Prism.highlightAll();
         }
-        $('.frame-row').click(function () {
-          $('.frame-row').removeClass('active')
-          $(this).addClass('active')
-          showFrameContext(this)
+        $$('.frame-row').forEach(function(node) {
+          node.onclick = function (e) {
+            $$('.frame-row').forEach(function(_node) { _node.classList.remove('active') });
+            e.currentTarget.classList.add('active');
+            showFrameContext(e.currentTarget);
+          }
         })
-        $('#frames-filter').click(function () {
-          filterFrames()
-        })
-        displayFirstView()
-        showFrameContext($('.frame-row.active')[0])
-      })
+        $('#frames-filter').onclick = function () {
+          filterFrames();
+        }
+        displayFirstView();
+        showFrameContext($('.frame-row.active'));
+      })();
     </script>
   </section>
 </body>
