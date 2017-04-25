@@ -60,8 +60,8 @@ module.exports = app => {
       try {
         const errorView = new ErrorView(this, err);
         this.body = errorView.toHTML();
-      } catch (ex) {
-        this.body.errors = ex.errors;
+      } catch (err) {
+        this.body = err;
       }
     },
 
