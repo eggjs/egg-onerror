@@ -100,7 +100,8 @@ describe('test/onerror.test.js', () => {
     return request(app.callback())
     .get('/user.json')
     .set('x-request-with', 'XMLHttpRequest')
-    .expect(/"message":"test error","stack":/)
+    .expect(/"message":"test error"/)
+    .expect(/"stack":/)
     .expect(500);
   });
 
@@ -109,7 +110,8 @@ describe('test/onerror.test.js', () => {
     return request(app.callback())
     .get('/user.json')
     .set('Accept', 'application/json')
-    .expect(/"message":"test error","stack":/)
+    .expect(/"message":"test error"/)
+    .expect(/"stack":/)
     .expect(500);
   });
 

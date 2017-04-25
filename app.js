@@ -3,7 +3,7 @@
 const http = require('http');
 const onerror = require('koa-onerror');
 const ErrorView = require('./lib/error_view');
-const { isProd, detectErrorMessage, detectStatus, accepts } = require('./lib/utils');
+const { isProd, detectStatus, accepts } = require('./lib/utils');
 
 module.exports = app => {
   // logging error
@@ -42,7 +42,6 @@ module.exports = app => {
 
     html(err) {
       const status = detectStatus(err);
-      // const code = err.code || err.type;
       const errorPageUrl = config.errorPageUrl;
       // keep the real response status
       this.realStatus = status;
@@ -57,40 +56,43 @@ module.exports = app => {
         return;
       }
 
-      try {
-        const errorView = new ErrorView(this, err);
-        this.body = errorView.toHTML();
-      } catch (err) {
-        this.body = err;
-      }
+      const errorView = new ErrorView(this, err);
+      this.body = errorView.toHTML();
     },
 
     json(err) {
       const status = detectStatus(err);
-      const code = err.code || err.type;
-      const message = detectErrorMessage(this, err);
+      const errorView = new ErrorView(this, err);
+      let errorJson = errorView.toJSON();
+
       this.status = status;
 
-      this.body = {
-        code,
-        message,
-      };
-
-      // 5xx server side error
-      if (status >= 500) {
-        if (isProd(app)) {
-          // don't respond any error message in production env
-          this.body.message = http.STATUS_CODES[status];
+      if (isProd(app)) {
+        // 5xx server side error
+        if (status >= 500) {
+          errorJson = {
+            code: errorJson.code,
+            // don't respond any error message in production env
+            message: http.STATUS_CODES[status],
+          };
         } else {
-          // provide detail error stack in local env
-          this.body.stack = err.stack;
+          // 4xx client side error
+          // addition `errors`
+          errorJson = {
+            code: errorJson.code,
+            message: errorJson.message,
+          };
         }
-        return;
+      } else {
+        if (status >= 500) {
+          // provide detail error stack in local env
+          errorJson.stack = err.stack;
+        } else {
+          errorJson.errors = err.errors;
+        }
       }
 
-      // 4xx client side error
-      // addition `errors`
-      this.body.errors = err.errors;
+      this.body = errorJson;
     },
   });
 };
