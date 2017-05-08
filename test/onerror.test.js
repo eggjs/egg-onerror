@@ -132,6 +132,15 @@ describe('test/onerror.test.js', () => {
     .expect(400);
   });
 
+  it('should return err.errors at prod env', () => {
+    mm(app.config, 'env', 'prod');
+    return request(app.callback())
+    .get('/user.json?status=400&errors=test')
+    .set('Accept', 'application/json')
+    .expect(/test/)
+    .expect(400);
+  });
+
   it('should return parsing json error', () => {
     return request(app.callback())
     .post('/test?status=400')

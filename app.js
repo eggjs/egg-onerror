@@ -3,7 +3,12 @@
 const http = require('http');
 const onerror = require('koa-onerror');
 const ErrorView = require('./lib/error_view');
-const { isProd, detectStatus, accepts } = require('./lib/utils');
+const {
+  isProd,
+  detectStatus,
+  detectErrorMessage,
+  accepts,
+} = require('./lib/utils');
 
 module.exports = app => {
   // logging error
@@ -69,10 +74,12 @@ module.exports = app => {
       this.status = status;
 
       if (isProd(app)) {
+        const code = err.code || err.type;
+        const message = detectErrorMessage(this, err);
         // 5xx server side error
         if (status >= 500) {
           errorJson = {
-            code: errorJson.code,
+            code,
             // don't respond any error message in production env
             message: http.STATUS_CODES[status],
           };
@@ -80,8 +87,9 @@ module.exports = app => {
           // 4xx client side error
           // addition `errors`
           errorJson = {
-            code: errorJson.code,
-            message: errorJson.message,
+            code,
+            message,
+            errors: err.errors,
           };
         }
       } else {
