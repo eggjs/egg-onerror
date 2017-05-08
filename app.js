@@ -48,7 +48,9 @@ module.exports = app => {
       // don't respond any error message in production env
       if (isProd(app)) {
         if (errorPageUrl) {
-          const statusQuery = (errorPageUrl.indexOf('?') > 0 ? '&' : '?') + `real_status=${status}`;
+          const statusQuery =
+            (errorPageUrl.indexOf('?') > 0 ? '&' : '?') +
+            `real_status=${status}`;
           return this.redirect(errorPageUrl + statusQuery);
         }
         this.status = 500;
@@ -62,8 +64,7 @@ module.exports = app => {
 
     json(err) {
       const status = detectStatus(err);
-      const errorView = new ErrorView(this, err);
-      let errorJson = errorView.toJSON();
+      let errorJson = {};
 
       this.status = status;
 
@@ -84,6 +85,9 @@ module.exports = app => {
           };
         }
       } else {
+        const errorView = new ErrorView(this, err);
+        errorJson = errorView.toJSON();
+
         if (status >= 500) {
           // provide detail error stack in local env
           errorJson.stack = err.stack;
