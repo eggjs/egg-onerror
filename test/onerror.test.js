@@ -37,7 +37,7 @@ describe('test/onerror.test.js', () => {
   it('should handle status:-1 as status:500', () => {
     return request(app.callback())
     .get('/?status=-1')
-    .expect(/<h1 class="box">Error in \/\?status=-1<\/h1>/)
+    .expect(/<h1 class="box">Error in &#x2F;\?status&#x3D;-1<\/h1>/)
     .expect(500);
   });
 
@@ -51,7 +51,7 @@ describe('test/onerror.test.js', () => {
   it('should handle escape xss', () => {
     return request(app.callback())
     .get('/?message=<script></script>')
-    .expect(/&lt;script&gt;&lt;\/script&gt;/)
+    .expect(/&lt;script&gt;&lt;&#x2F;script&gt;/)
     .expect(500);
   });
 
@@ -100,7 +100,8 @@ describe('test/onerror.test.js', () => {
     return request(app.callback())
     .get('/user.json')
     .set('x-request-with', 'XMLHttpRequest')
-    .expect(/"message":"test error","stack":/)
+    .expect(/"message":"test error"/)
+    .expect(/"stack":/)
     .expect(500);
   });
 
@@ -109,7 +110,8 @@ describe('test/onerror.test.js', () => {
     return request(app.callback())
     .get('/user.json')
     .set('Accept', 'application/json')
-    .expect(/"message":"test error","stack":/)
+    .expect(/"message":"test error"/)
+    .expect(/"stack":/)
     .expect(500);
   });
 
@@ -123,6 +125,15 @@ describe('test/onerror.test.js', () => {
   });
 
   it('should return err.errors', () => {
+    return request(app.callback())
+    .get('/user.json?status=400&errors=test')
+    .set('Accept', 'application/json')
+    .expect(/test/)
+    .expect(400);
+  });
+
+  it('should return err.errors at prod env', () => {
+    mm(app.config, 'env', 'prod');
     return request(app.callback())
     .get('/user.json?status=400&errors=test')
     .set('Accept', 'application/json')
@@ -242,7 +253,7 @@ describe('test/onerror.test.js', () => {
       return request(app.callback())
         .get('/error')
         .expect(500)
-        .expect(/you can`t get userId\./);
+        .expect(/you can&#x60;t get userId\./);
     });
   });
 
