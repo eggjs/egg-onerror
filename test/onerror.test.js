@@ -2,7 +2,6 @@
 
 const fs = require('fs');
 const pedding = require('pedding');
-const request = require('supertest');
 const mm = require('egg-mock');
 const rimraf = require('rimraf');
 const path = require('path');
@@ -35,42 +34,42 @@ describe('test/onerror.test.js', () => {
   });
 
   it('should handle status:-1 as status:500', () => {
-    return request(app.callback())
+    return app.httpRequest()
     .get('/?status=-1')
     .expect(/<h1 class="box">Error in &#x2F;\?status&#x3D;-1<\/h1>/)
     .expect(500);
   });
 
   it('should handle status:undefined as status:500', () => {
-    return request(app.callback())
+    return app.httpRequest()
     .get('/')
     .expect(/<div class="context">test error<\/div>/)
     .expect(500);
   });
 
   it('should handle escape xss', () => {
-    return request(app.callback())
+    return app.httpRequest()
     .get('/?message=<script></script>')
     .expect(/&lt;script&gt;&lt;&#x2F;script&gt;/)
     .expect(500);
   });
 
   it('should handle status:1 as status:500', () => {
-    return request(app.callback())
+    return app.httpRequest()
     .get('/?status=1')
     .expect(/<div class="context">test error<\/div>/)
     .expect(500);
   });
 
   it('should handle status:400', () => {
-    return request(app.callback())
+    return app.httpRequest()
     .get('/?status=400')
     .expect(/<div class="context">test error<\/div>/)
     .expect(400);
   });
 
   it('should return error json format when Accept is json', () => {
-    return request(app.callback())
+    return app.httpRequest()
       .get('/user')
       .set('Accept', 'application/json')
       .expect(res => {
@@ -82,7 +81,7 @@ describe('test/onerror.test.js', () => {
   });
 
   it('should return error json format when request path match *.json', () => {
-    return request(app.callback())
+    return app.httpRequest()
       .get('/user.json')
       .expect(res => {
         assert(res.body);
@@ -97,7 +96,7 @@ describe('test/onerror.test.js', () => {
       if (ctx.get('x-request-with') === 'XMLHttpRequest') return 'json';
       return 'html';
     });
-    return request(app.callback())
+    return app.httpRequest()
     .get('/user.json')
     .set('x-request-with', 'XMLHttpRequest')
     .expect(/"message":"test error"/)
@@ -107,7 +106,7 @@ describe('test/onerror.test.js', () => {
 
   it('should return err.stack when unittest', () => {
     mm(app.config, 'env', 'unittest');
-    return request(app.callback())
+    return app.httpRequest()
     .get('/user.json')
     .set('Accept', 'application/json')
     .expect(/"message":"test error"/)
@@ -117,7 +116,7 @@ describe('test/onerror.test.js', () => {
 
   it('should return err status message', () => {
     mm(app.config, 'env', 'prod');
-    return request(app.callback())
+    return app.httpRequest()
     .get('/user.json')
     .set('Accept', 'application/json')
     .expect({ message: 'Internal Server Error' })
@@ -125,7 +124,7 @@ describe('test/onerror.test.js', () => {
   });
 
   it('should return err.errors', () => {
-    return request(app.callback())
+    return app.httpRequest()
     .get('/user.json?status=400&errors=test')
     .set('Accept', 'application/json')
     .expect(/test/)
@@ -134,7 +133,7 @@ describe('test/onerror.test.js', () => {
 
   it('should return err.errors at prod env', () => {
     mm(app.config, 'env', 'prod');
-    return request(app.callback())
+    return app.httpRequest()
     .get('/user.json?status=400&errors=test')
     .set('Accept', 'application/json')
     .expect(/test/)
@@ -142,7 +141,7 @@ describe('test/onerror.test.js', () => {
   });
 
   it('should return parsing json error', () => {
-    return request(app.callback())
+    return app.httpRequest()
     .post('/test?status=400')
     .send({ test: 1 })
     .set('Content-Type', 'application/json')
@@ -152,7 +151,7 @@ describe('test/onerror.test.js', () => {
 
   it('should redirect to error page', () => {
     mm(app.config, 'env', 'test');
-    return request(app.callback())
+    return app.httpRequest()
     .get('/?status=500')
     .expect('Location', 'https://eggjs.com/500.html?real_status=500')
     .expect(302);
@@ -160,7 +159,7 @@ describe('test/onerror.test.js', () => {
 
   it('should handle err code', () => {
     mm(app.config, 'env', 'prod');
-    return request(app.callback())
+    return app.httpRequest()
     .get('/?status=400&code=3')
     .expect('Location', 'https://eggjs.com/500.html?real_status=400')
     .expect(302);
@@ -168,21 +167,20 @@ describe('test/onerror.test.js', () => {
 
   if (process.platform !== 'win32') {
     it('should log warn 4xx', function* () {
-      rimraf.sync(path.join(__dirname, 'fixtrues/onerror/logs'));
-      mm.consoleLevel('NONE');
+      rimraf.sync(path.join(__dirname, 'fixtrues/onerror-4xx/logs'));
       const app = mm.app({
-        baseDir: 'onerror',
+        baseDir: 'onerror-4xx',
       });
       yield app.ready();
-      yield request(app.callback())
+      yield app.httpRequest()
       .post('/body_parser')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({ foo: new Buffer(1024 * 100).fill(1).toString() })
       .expect(/request entity too large/)
       .expect(413);
-      app.close();
+      yield app.close();
 
-      const warnLog = path.join(__dirname, 'fixtures/onerror/logs/onerror/onerror-web.log');
+      const warnLog = path.join(__dirname, 'fixtures/onerror-4xx/logs/onerror-4xx/onerror-4xx-web.log');
       assert(/POST \/body_parser] nodejs\.Error: request entity too large/.test(fs.readFileSync(warnLog, 'utf8')));
     });
   }
@@ -200,7 +198,7 @@ describe('test/onerror.test.js', () => {
 
     it('should display 500 Internal Server Error', () => {
       mm(app.config, 'env', 'prod');
-      return request(app.callback())
+      return app.httpRequest()
       .get('/?status=500')
       .expect(500)
       .expect(/Internal Server Error, real status: 500/);
@@ -221,17 +219,17 @@ describe('test/onerror.test.js', () => {
     it('should redirect to error page', function* () {
       mm(app.config, 'env', 'prod');
 
-      yield request(app.callback())
+      yield app.httpRequest()
       .get('/mockerror')
       .expect('Location', '/500?real_status=500')
       .expect(302);
 
-      yield request(app.callback())
+      yield app.httpRequest()
       .get('/mock4xx')
       .expect('Location', '/500?real_status=400')
       .expect(302);
 
-      yield request(app.callback())
+      yield app.httpRequest()
       .get('/500')
       .expect('hi, this custom 500 page')
       .expect(500);
@@ -250,7 +248,7 @@ describe('test/onerror.test.js', () => {
     after(() => app.close());
 
     it('should 500', () => {
-      return request(app.callback())
+      return app.httpRequest()
         .get('/error')
         .expect(500)
         .expect(/you can&#x60;t get userId\./);
@@ -273,7 +271,7 @@ describe('test/onerror.test.js', () => {
         throw new Error('should not excute');
       });
 
-      return request(app.callback())
+      return app.httpRequest()
       .get('/?name=IgnoreError')
       .expect(500);
     });
@@ -285,7 +283,7 @@ describe('test/onerror.test.js', () => {
         done();
       });
 
-      request(app.callback())
+      app.httpRequest()
       .get('/?name=CustomError')
       .expect(500)
       .then(() => done(), done);
@@ -298,24 +296,28 @@ describe('test/onerror.test.js', () => {
         done();
       });
 
-      request(app.callback())
+      app.httpRequest()
       .get('/?name=OtherError')
       .expect(500)
       .then(() => done(), done);
     });
   });
 
-  describe('agent emit error', () => {
+  describe.skip('agent emit error', () => {
     let app;
-    before(done => {
+    before(() => {
       app = mm.cluster({
         baseDir: 'agent-error',
       });
-      setTimeout(done, 5000);
+      app.debug();
+      return app.ready();
     });
     after(() => app.close());
 
-    it('should log error', () => {
+    it('should log error', function* () {
+      console.log('app.stderr: %j', app.stderr);
+      console.log(app.stdout);
+      yield app.close();
       assert(/nodejs.Error: emit error/.test(app.stderr));
     });
   });
