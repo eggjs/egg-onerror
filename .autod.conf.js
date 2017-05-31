@@ -19,5 +19,4 @@ module.exports = {
   exclude: [
     './test/fixtures',
   ],
-  registry: 'https://r.cnpmjs.org',
 }
