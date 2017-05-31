@@ -303,17 +303,21 @@ describe('test/onerror.test.js', () => {
     });
   });
 
-  describe('agent emit error', () => {
+  describe.skip('agent emit error', () => {
     let app;
-    before(done => {
+    before(() => {
       app = mm.cluster({
         baseDir: 'agent-error',
       });
-      setTimeout(done, 5000);
+      app.debug();
+      return app.ready();
     });
     after(() => app.close());
 
-    it('should log error', () => {
+    it('should log error', function* () {
+      console.log('app.stderr: %j', app.stderr);
+      console.log(app.stdout);
+      yield app.close();
       assert(/nodejs.Error: emit error/.test(app.stderr));
     });
   });
