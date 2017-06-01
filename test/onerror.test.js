@@ -76,6 +76,8 @@ describe('test/onerror.test.js', () => {
         assert(res.body);
         assert(res.body.message === 'test error');
         assert(res.body.stack.includes('Error: test error'));
+        // should not includes error detail
+        assert(!res.body.frames);
       })
       .expect(500);
   });
@@ -87,6 +89,8 @@ describe('test/onerror.test.js', () => {
         assert(res.body);
         assert(res.body.message === 'test error');
         assert(res.body.stack.includes('Error: test error'));
+        assert(res.body.status === 500);
+        assert(res.body.name === 'Error');
       })
       .expect(500);
   });
@@ -131,21 +135,49 @@ describe('test/onerror.test.js', () => {
     .expect(400);
   });
 
-  it('should return err.errors at prod env', () => {
+  it('should return err json at prod env', () => {
     mm(app.config, 'env', 'prod');
     return app.httpRequest()
     .get('/user.json?status=400&errors=test')
     .set('Accept', 'application/json')
     .expect(/test/)
+    .expect({
+      errors: 'test',
+      message: 'test error',
+    })
     .expect(400);
   });
 
-  it('should return parsing json error', () => {
+  it('should return err json at non prod env', () => {
+    return app.httpRequest()
+    .get('/user.json?status=400&errors=test')
+    .set('Accept', 'application/json')
+    .expect(/test/)
+    .expect({
+      errors: 'test',
+      message: 'test error',
+    })
+    .expect(400);
+  });
+
+  it('should return parsing json error on html response', () => {
     return app.httpRequest()
     .post('/test?status=400')
     .send({ test: 1 })
     .set('Content-Type', 'application/json')
     .expect(/Problems parsing JSON/)
+    .expect(400);
+  });
+
+  it('should return parsing json error on json response', () => {
+    return app.httpRequest()
+    .post('/test?status=400')
+    .send({ test: 1 })
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .expect({
+      message: 'Problems parsing JSON',
+    })
     .expect(400);
   });
 
@@ -303,7 +335,7 @@ describe('test/onerror.test.js', () => {
     });
   });
 
-  describe.skip('agent emit error', () => {
+  describe('agent emit error', () => {
     let app;
     before(() => {
       app = mm.cluster({

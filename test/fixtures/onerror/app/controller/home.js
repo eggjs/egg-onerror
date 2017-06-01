@@ -13,10 +13,12 @@ exports.index = function* () {
   }
   throw err;
 };
+
 exports.csrf = function* () {
   this.set('x-csrf', this.csrf);
   this.body = 'test';
 };
+
 exports.test = function* () {
   const err = new SyntaxError('syntax error');
   if (this.query.status) {
