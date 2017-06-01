@@ -72,10 +72,10 @@ module.exports = app => {
       let errorJson = {};
 
       this.status = status;
+      const code = err.code || err.type;
+      const message = detectErrorMessage(this, err);
 
       if (isProd(app)) {
-        const code = err.code || err.type;
-        const message = detectErrorMessage(this, err);
         // 5xx server side error
         if (status >= 500) {
           errorJson = {
@@ -93,14 +93,21 @@ module.exports = app => {
           };
         }
       } else {
-        const errorView = new ErrorView(this, err);
-        errorJson = errorView.toJSON();
+        errorJson = {
+          code,
+          message,
+          errors: err.errors,
+        };
 
         if (status >= 500) {
           // provide detail error stack in local env
           errorJson.stack = err.stack;
-        } else {
-          errorJson.errors = err.errors;
+          errorJson.name = err.name;
+          for (const key in err) {
+            if (!errorJson[key]) {
+              errorJson[key] = err[key];
+            }
+          }
         }
       }
 
