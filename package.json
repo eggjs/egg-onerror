@@ -1,6 +1,6 @@
 {
   "name": "egg-onerror",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "error handler for egg",
   "eggPlugin": {
     "name": "onerror"
