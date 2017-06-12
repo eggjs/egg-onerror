@@ -1,4 +1,10 @@
 
+1.4.4 / 2017-06-12
+==================
+
+  * fix: make error style more good (#17)
+  * fix: add error-title's line-height (#16)
+
 1.4.3 / 2017-06-04
 ==================
 
