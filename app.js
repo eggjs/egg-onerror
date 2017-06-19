@@ -52,14 +52,21 @@ module.exports = app => {
       this.realStatus = status;
       // don't respond any error message in production env
       if (isProd(app)) {
-        if (errorPageUrl) {
-          const statusQuery =
-            (errorPageUrl.indexOf('?') > 0 ? '&' : '?') +
-            `real_status=${status}`;
-          return this.redirect(errorPageUrl + statusQuery);
+        // 5xx
+        if (status >= 500) {
+          if (errorPageUrl) {
+            const statusQuery =
+              (errorPageUrl.indexOf('?') > 0 ? '&' : '?') +
+              `real_status=${status}`;
+            return this.redirect(errorPageUrl + statusQuery);
+          }
+          this.status = 500;
+          this.body = `<h2>Internal Server Error, real status: ${status}</h2>`;
+          return;
         }
-        this.status = 500;
-        this.body = `<h2>Internal Server Error, real status: ${status}</h2>`;
+        // 4xx
+        this.status = status;
+        this.body = `<h2>${status} ${http.STATUS_CODES[status]}</h2>`;
         return;
       }
 
