@@ -15,7 +15,6 @@ describe('test/onerror.test.js', () => {
     app = mm.app({ baseDir: 'onerror' });
     return app.ready();
   });
-
   after(() => app.close());
 
   afterEach(mm.restore);
@@ -292,7 +291,27 @@ describe('test/onerror.test.js', () => {
     });
   });
 
-  describe('onerror.ctx.error', () => {
+  describe('onerror.ctx.error env=local', () => {
+    let app;
+    before(() => {
+      mm.env('local');
+      mm.consoleLevel('NONE');
+      app = mm.app({
+        baseDir: 'onerror-ctx-error',
+      });
+      return app.ready();
+    });
+    after(() => app.close());
+
+    it('should 500 full html', () => {
+      return app.httpRequest()
+        .get('/error')
+        .expect(500)
+        .expect(/you can&#x60;t get userId\./);
+    });
+  });
+
+  describe('onerror.ctx.error env=unittest', () => {
     let app;
     before(() => {
       mm.consoleLevel('NONE');
@@ -303,11 +322,11 @@ describe('test/onerror.test.js', () => {
     });
     after(() => app.close());
 
-    it('should 500', () => {
+    it('should 500 simple html', () => {
       return app.httpRequest()
         .get('/error')
         .expect(500)
-        .expect(/you can&#x60;t get userId\./);
+        .expect(/you can`t get userId\./);
     });
   });
 
