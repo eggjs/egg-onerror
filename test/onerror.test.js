@@ -145,7 +145,29 @@ describe('test/onerror.test.js', () => {
       errors: 'test',
       message: 'test error',
     })
+    .expect('Content-Type', 'application/json; charset=utf-8')
     .expect(400);
+  });
+
+  it('should return 4xx html at prod env', () => {
+    mm(app.config, 'env', 'prod');
+    return app.httpRequest()
+    .post('/test?status=400&errors=test')
+    .set('Accept', 'text/html')
+    .expect('<h2>400 Bad Request</h2>')
+    .expect('Content-Type', 'text/html; charset=utf-8')
+    .expect(400);
+  });
+
+  it('should return 500 html at prod env', () => {
+    mm(app.config, 'env', 'prod');
+    mm(app.config.onerror, 'errorPageUrl', '');
+    return app.httpRequest()
+    .post('/test?status=502&errors=test')
+    .set('Accept', 'text/html')
+    .expect('<h2>Internal Server Error, real status: 502</h2>')
+    .expect('Content-Type', 'text/html; charset=utf-8')
+    .expect(500);
   });
 
   it('should return err json at non prod env', () => {
@@ -166,6 +188,7 @@ describe('test/onerror.test.js', () => {
     .send({ test: 1 })
     .set('Content-Type', 'application/json')
     .expect(/Problems parsing JSON/)
+    .expect('Content-Type', 'text/html; charset=utf-8')
     .expect(400);
   });
 
@@ -178,6 +201,7 @@ describe('test/onerror.test.js', () => {
     .expect({
       message: 'Problems parsing JSON',
     })
+    .expect('Content-Type', 'application/json; charset=utf-8')
     .expect(400);
   });
 
@@ -189,12 +213,12 @@ describe('test/onerror.test.js', () => {
     .expect(302);
   });
 
-  it('should handle err code', () => {
+  it('should handle 403 err', () => {
     mm(app.config, 'env', 'prod');
     return app.httpRequest()
-    .get('/?status=400&code=3')
-    .expect('Location', 'https://eggjs.com/500.html?real_status=400')
-    .expect(302);
+    .get('/?status=403&code=3')
+    .expect('<h2>403 Forbidden</h2>')
+    .expect(403);
   });
 
   if (process.platform !== 'win32') {
@@ -258,8 +282,8 @@ describe('test/onerror.test.js', () => {
 
       yield app.httpRequest()
       .get('/mock4xx')
-      .expect('Location', '/500?real_status=400')
-      .expect(302);
+      .expect('<h2>400 Bad Request</h2>')
+      .expect(400);
 
       yield app.httpRequest()
       .get('/500')
