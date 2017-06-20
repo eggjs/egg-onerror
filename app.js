@@ -70,6 +70,13 @@ module.exports = app => {
         return;
       }
 
+      // show simple error format for unittest
+      if (app.config.env === 'unittest') {
+        this.status = status;
+        this.body = `${err.name}: ${err.message}\n${err.stack}`;
+        return;
+      }
+
       const errorView = new ErrorView(this, err);
       this.body = errorView.toHTML();
     },
