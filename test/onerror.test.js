@@ -288,6 +288,11 @@ describe('test/onerror.test.js', () => {
         .get('/500')
         .expect('hi, this custom 500 page')
         .expect(500);
+
+      yield app.httpRequest()
+        .get('/special')
+        .expect('Location', '/specialerror?real_status=500')
+        .expect(302);
     });
   });
 
