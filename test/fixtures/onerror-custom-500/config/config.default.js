@@ -1,7 +1,7 @@
 'use strict';
 
 exports.onerror = {
-  errorPageUrl: '/500',
+  errorPageUrl: (_, ctx) => ctx.errorPageUrl || '/500',
 };
 
 exports.keys = 'foo,bar';

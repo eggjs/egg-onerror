@@ -2,6 +2,7 @@
 
 const http = require('http');
 const onerror = require('koa-onerror');
+const is = require('is-type-of');
 const ErrorView = require('./lib/error_view');
 const {
   isProd,
@@ -47,7 +48,10 @@ module.exports = app => {
 
     html(err) {
       const status = detectStatus(err);
-      const errorPageUrl = config.errorPageUrl;
+      const errorPageUrl = is.function(config.errorPageUrl)
+        ? config.errorPageUrl(err, this)
+        : config.errorPageUrl;
+
       // keep the real response status
       this.realStatus = status;
       // don't respond any error message in production env
