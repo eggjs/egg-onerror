@@ -2,7 +2,6 @@
 
 const http = require('http');
 const onerror = require('koa-onerror');
-const is = require('is-type-of');
 const ErrorView = require('./lib/error_view');
 const {
   isProd,
@@ -48,7 +47,7 @@ module.exports = app => {
 
     html(err) {
       const status = detectStatus(err);
-      const errorPageUrl = is.function(config.errorPageUrl)
+      const errorPageUrl = typeof config.errorPageUrl === 'function'
         ? config.errorPageUrl(err, this)
         : config.errorPageUrl;
 

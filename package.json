@@ -22,7 +22,6 @@
   ],
   "dependencies": {
     "cookie": "^0.3.1",
-    "is-type-of": "^1.1.0",
     "koa-onerror": "^3.1.0",
     "mustache": "^2.3.0",
     "stack-trace": "0.0.10"
