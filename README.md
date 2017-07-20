@@ -32,10 +32,16 @@ $ npm i egg-onerror
 
 `egg-onerror` is on by default in egg. But you still can configure its properties to fits your scenarios.
 
-- `errorPageUrl: String` - If user request html pages in production environment and unexpected error happened, it will redirect user to `errorPageUrl`.
+- `errorPageUrl: String or Function` - If user request html pages in production environment and unexpected error happened, it will redirect user to `errorPageUrl`.
 - `accepts: Function` - detect user's request accpet `json` or `html`.
 
 ```js
+// config.default.js
+// errorPageUrl support funtion
+exports.onerror = {
+  errorPageUrl: (err, ctx) => ctx.errorPageUrl || '/500',
+};
+
 // an accept detect function that mark all request with `x-request-with=XMLHttpRequest` header accepts json.
 function accpets(ctx) {
   if (ctx.get('x-request-with') === 'XMLHttpRequest') return 'json';

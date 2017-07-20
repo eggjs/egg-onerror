@@ -16,4 +16,10 @@ module.exports = app => {
     this.status = 500;
     this.body = 'hi, this custom 500 page';
   });
+
+  app.get('/special', function* () {
+    this.errorPageUrl = '/specialerror';
+    // eslint-disable-next-line
+    hi.foo();
+  });
 };
