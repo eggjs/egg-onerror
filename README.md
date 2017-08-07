@@ -43,7 +43,7 @@ exports.onerror = {
 };
 
 // an accept detect function that mark all request with `x-request-with=XMLHttpRequest` header accepts json.
-function accpets(ctx) {
+function accepts(ctx) {
   if (ctx.get('x-request-with') === 'XMLHttpRequest') return 'json';
   return 'html';
 }
