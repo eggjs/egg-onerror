@@ -42,9 +42,9 @@ exports.onerror = {
   errorPageUrl: (err, ctx) => ctx.errorPageUrl || '/500',
 };
 
-// an accept detect function that mark all request with `x-request-with=XMLHttpRequest` header accepts json.
+// an accept detect function that mark all request with `x-requested-with=XMLHttpRequest` header accepts json.
 function accepts(ctx) {
-  if (ctx.get('x-request-with') === 'XMLHttpRequest') return 'json';
+  if (ctx.get('x-requested-with') === 'XMLHttpRequest') return 'json';
   return 'html';
 }
 ```

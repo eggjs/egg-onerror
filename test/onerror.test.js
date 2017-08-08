@@ -96,12 +96,12 @@ describe('test/onerror.test.js', () => {
 
   it('should support custom accpets return err.stack', () => {
     mm(app.config.onerror, 'accepts', ctx => {
-      if (ctx.get('x-request-with') === 'XMLHttpRequest') return 'json';
+      if (ctx.get('x-requested-with') === 'XMLHttpRequest') return 'json';
       return 'html';
     });
     return app.httpRequest()
       .get('/user.json')
-      .set('x-request-with', 'XMLHttpRequest')
+      .set('x-requested-with', 'XMLHttpRequest')
       .expect(/"message":"test error"/)
       .expect(/"stack":/)
       .expect(500);
@@ -236,7 +236,7 @@ describe('test/onerror.test.js', () => {
       yield app.close();
 
       const warnLog = path.join(__dirname, 'fixtures/onerror-4xx/logs/onerror-4xx/onerror-4xx-web.log');
-      assert(/POST \/body_parser] nodejs\.Error: request entity too large/.test(fs.readFileSync(warnLog, 'utf8')));
+      assert(/POST \/body_parser] nodejs\..*?Error: request entity too large/.test(fs.readFileSync(warnLog, 'utf8')));
     });
   }
 
