@@ -6,4 +6,5 @@ module.exports = app => {
   app.post('/test', app.controller.home.test);
   app.get('/user', app.controller.user);
   app.get('/user.json', app.controller.user);
+  app.get('/jsonp', app.jsonp(), app.controller.home.jsonp);
 };

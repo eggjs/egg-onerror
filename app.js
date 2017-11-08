@@ -9,6 +9,7 @@ const {
   detectErrorMessage,
   accepts,
 } = require('./lib/utils');
+const JSONP_WRAP = Symbol.for('jsonp#wrapper');
 
 module.exports = app => {
   // logging error
@@ -38,7 +39,7 @@ module.exports = app => {
     }
   });
 
-  onerror(app, {
+  const errorOptions = {
     // support customize accepts function
     accepts() {
       const fn = config.accepts || accepts;
@@ -130,5 +131,15 @@ module.exports = app => {
 
       this.body = errorJson;
     },
-  });
+
+    js(err) {
+      errorOptions.json.call(this, err, this);
+
+      if (this[JSONP_WRAP]) {
+        this[JSONP_WRAP](this.body);
+      }
+    },
+  };
+
+  onerror(app, errorOptions);
 };
