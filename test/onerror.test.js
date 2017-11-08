@@ -220,6 +220,15 @@ describe('test/onerror.test.js', () => {
       .expect(403);
   });
 
+  it('should return jsop style', () => {
+    mm(app.config, 'env', 'prod');
+    return app.httpRequest()
+      .get('/jsonp?callback=fn')
+      .expect('Content-Type', 'application/javascript; charset=utf-8')
+      .expect('/**/ typeof fn === \'function\' && fn({"message":"Internal Server Error"});')
+      .expect(500);
+  });
+
   if (process.platform !== 'win32') {
     it('should log warn 4xx', function* () {
       rimraf.sync(path.join(__dirname, 'fixtrues/onerror-4xx/logs'));
