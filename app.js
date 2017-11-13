@@ -140,5 +140,9 @@ module.exports = app => {
     },
   };
 
+  // support customize error response
+  [ 'all', 'html', 'json', 'text', 'js' ].forEach(type => {
+    if (config[type]) errorOptions[type] = config[type];
+  });
   onerror(app, errorOptions);
 };
