@@ -25,23 +25,23 @@
   ],
   "dependencies": {
     "cookie": "^0.3.1",
-    "koa-onerror": "^3.1.0",
+    "koa-onerror": "^4.0.0",
     "mustache": "^2.3.0",
     "stack-trace": "^0.0.10"
   },
   "devDependencies": {
-    "autod": "^2.9.0",
-    "egg": "^1.7.0",
-    "egg-bin": "^4.1.0",
+    "autod": "^3.0.0",
+    "egg": "next",
+    "egg-bin": "^4.3.5",
     "egg-ci": "^1.8.0",
-    "egg-mock": "^3.9.0",
-    "eslint": "^4.4.1",
-    "eslint-config-egg": "^5.0.0",
+    "egg-mock": "^3.13.1",
+    "eslint": "^4.11.0",
+    "eslint-config-egg": "^5.1.1",
     "pedding": "^1.1.0",
-    "rimraf": "^2.6.1"
+    "rimraf": "^2.6.2"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.0.0"
   },
   "scripts": {
     "test": "npm run lint -- --fix && npm run test-local",
@@ -52,7 +52,7 @@
     "autod": "autod"
   },
   "ci": {
-    "version": "6, 8"
+    "version": "8, 9"
   },
   "author": "dead_horse"
 }
