@@ -26,3 +26,7 @@ exports.test = function* () {
   }
   throw err;
 };
+
+exports.jsonp = function* () {
+  throw new Error('jsonp error');
+};

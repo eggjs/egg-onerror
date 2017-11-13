@@ -3,7 +3,10 @@
   "version": "1.5.0",
   "description": "error handler for egg",
   "eggPlugin": {
-    "name": "onerror"
+    "name": "onerror",
+    "optionalDependencies": [
+      "jsonp"
+    ]
   },
   "files": [
     "config",

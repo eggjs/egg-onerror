@@ -38,7 +38,7 @@ module.exports = app => {
     }
   });
 
-  onerror(app, {
+  const errorOptions = {
     // support customize accepts function
     accepts() {
       const fn = config.accepts || accepts;
@@ -130,5 +130,15 @@ module.exports = app => {
 
       this.body = errorJson;
     },
-  });
+
+    js(err) {
+      errorOptions.json.call(this, err, this);
+
+      if (this.createJsonpBody) {
+        this.createJsonpBody(this.body);
+      }
+    },
+  };
+
+  onerror(app, errorOptions);
 };
