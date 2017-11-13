@@ -221,11 +221,12 @@ describe('test/onerror.test.js', () => {
   });
 
   it('should return jsonp style', () => {
-    mm(app.config, 'env', 'test');
+    mm(app.config, 'env', 'prod');
     return app.httpRequest()
-      .get('/?status=500')
-      .expect('Location', 'https://eggjs.com/500.html?real_status=500')
-      .expect(302);
+      .get('/jsonp?callback=fn')
+      .expect('content-type', 'application/javascript; charset=utf-8')
+      .expect('/**/ typeof fn === \'function\' && fn({"message":"Internal Server Error"});')
+      .expect(500);
   });
 
   describe('customize', () => {
@@ -258,12 +259,11 @@ describe('test/onerror.test.js', () => {
     });
 
     it('should handle html by default', () => {
-      mm(app.config, 'env', 'prod');
+      mm(app.config, 'env', 'test');
       return app.httpRequest()
-        .get('/user.json')
-        .expect('content-type', 'application/json; charset=utf-8')
-        .expect({ msg: 'error' })
-        .expect(500);
+        .get('/?status=500')
+        .expect('Location', 'https://eggjs.com/500.html?real_status=500')
+        .expect(302);
     });
   });
 
