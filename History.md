@@ -1,4 +1,15 @@
 
+1.6.0 / 2017-11-13
+==================
+
+**features**
+  * [[`4a1b770`](http://github.com/eggjs/egg-onerror/commit/4a1b7707b28d3cc1e8bd69f4cca606305c507248)] - feat: support customize error handler (#26) (Yiyu He <<dead_horse@qq.com>>)
+  * [[`37c06ce`](http://github.com/eggjs/egg-onerror/commit/37c06ce45fb671a3087f4e74aafcef1ac122360d)] - feat: support jsonp (#25) (Yiyu He <<dead_horse@qq.com>>)
+
+**others**
+  * [[`a0d4df2`](http://github.com/eggjs/egg-onerror/commit/a0d4df2830bf58903dd27e277f963e3d52d32587)] - chore: fix README & update deps & fix test (#23) (TZ | 天猪 <<atian25@qq.com>>)
+  * [[`e49252e`](http://github.com/eggjs/egg-onerror/commit/e49252e3a648abbefc562635e163c4b9dd28e57d)] - docs: fix typo (#22) (TZ | 天猪 <<atian25@qq.com>>)
+
 1.5.0 / 2017-07-20
 ==================
 
