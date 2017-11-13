@@ -1,4 +1,10 @@
 
+2.0.0 / 2017-11-13
+==================
+
+**others**
+  * [[`6861f8f`](http://github.com/eggjs/egg-onerror/commit/6861f8fb5df4a210afca2c7454dcca4ec1ccbae4)] - refactor: use async function and support egg@2 (#27) (Yiyu He <<dead_horse@qq.com>>)
+
 1.6.0 / 2017-11-13
 ==================
 
