@@ -131,7 +131,7 @@ module.exports = app => {
       this.body = errorJson;
     },
 
-    jsonp(err) {
+    js(err) {
       errorOptions.json.call(this, err, this);
 
       if (this.createJsonpBody) {
