@@ -224,12 +224,47 @@ describe('test/onerror.test.js', () => {
     mm(app.config, 'env', 'prod');
     return app.httpRequest()
       .get('/jsonp?callback=fn')
-      .expect(res => {
-        console.log(res.headers, res.text);
-      })
       .expect('content-type', 'application/javascript; charset=utf-8')
       .expect('/**/ typeof fn === \'function\' && fn({"message":"Internal Server Error"});')
       .expect(500);
+  });
+
+  describe('customize', () => {
+    let app;
+    before(() => {
+      mm.consoleLevel('NONE');
+      app = app = mm.app({
+        baseDir: 'onerror-customize',
+      });
+      return app.ready();
+    });
+    after(() => app.close());
+
+    it('should support customize json style', () => {
+      mm(app.config, 'env', 'prod');
+      return app.httpRequest()
+        .get('/user.json')
+        .expect('content-type', 'application/json; charset=utf-8')
+        .expect({ msg: 'error' })
+        .expect(500);
+    });
+
+    it('should return jsonp style', () => {
+      mm(app.config, 'env', 'prod');
+      return app.httpRequest()
+        .get('/jsonp?callback=fn')
+        .expect('content-type', 'application/javascript; charset=utf-8')
+        .expect('/**/ typeof fn === \'function\' && fn({"msg":"error"});')
+        .expect(500);
+    });
+
+    it('should handle html by default', () => {
+      mm(app.config, 'env', 'test');
+      return app.httpRequest()
+        .get('/?status=500')
+        .expect('Location', 'https://eggjs.com/500.html?real_status=500')
+        .expect(302);
+    });
   });
 
   if (process.platform !== 'win32') {

@@ -34,6 +34,11 @@ $ npm i egg-onerror
 
 - `errorPageUrl: String or Function` - If user request html pages in production environment and unexpected error happened, it will redirect user to `errorPageUrl`.
 - `accepts: Function` - detect user's request accpet `json` or `html`.
+- `all: Function` - customize error handler, if `all` present, negotiation will be ignored.
+- `html: Function` - customize html error handler.
+- `text: Function` - customize text error handler.
+- `json: Function` - customize json error handler.
+- `jsonp: Function` - customize jsonp error handler.
 
 ```js
 // config.default.js
@@ -56,4 +61,3 @@ Please open an issue [here](https://github.com/eggjs/egg/issues).
 ## License
 
 [MIT](https://github.com/eggjs/egg-onerror/blob/master/LICENSE)
-
