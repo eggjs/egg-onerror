@@ -233,7 +233,7 @@ describe('test/onerror.test.js', () => {
     let app;
     before(() => {
       mm.consoleLevel('NONE');
-      app = app = mm.app({
+      app = mm.app({
         baseDir: 'onerror-customize',
       });
       return app.ready();
@@ -447,5 +447,30 @@ describe('test/onerror.test.js', () => {
       yield app.close();
       assert(/nodejs.Error: emit error/.test(app.stderr));
     });
+  });
+
+  describe('replace onerror default template', () => {
+
+    let app = null;
+    before(() => {
+      mm.consoleLevel('NONE');
+      app = mm.app({
+        baseDir: 'onerror-custom-template',
+      });
+      return app.ready();
+    });
+
+    after(() => app.close());
+
+    afterEach(mm.restore);
+
+    it('should use custom template', () => {
+      mm(app.config, 'env', 'local');
+      return app.httpRequest()
+        .get('/')
+        .expect(/custom template/)
+        .expect(500);
+    });
+
   });
 });
