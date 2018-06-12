@@ -1,4 +1,10 @@
 
+2.1.0 / 2018-06-12
+==================
+
+**features**
+  * [[`63cca2f`](http://github.com/eggjs/egg-onerror/commit/63cca2f3fb087583459e26e38c3874285b14aefd)] - feat: add replace template config (#28) (Harry Chen <<czy88840616@gmail.com>>)
+
 2.0.0 / 2017-11-13
 ==================
 
