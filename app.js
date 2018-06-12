@@ -1,6 +1,7 @@
 'use strict';
 
 const http = require('http');
+const fs = require('fs');
 const onerror = require('koa-onerror');
 const ErrorView = require('./lib/error_view');
 const {
@@ -13,6 +14,8 @@ const {
 module.exports = app => {
   // logging error
   const config = app.config.onerror;
+  const viewTemplate = fs.readFileSync(config.templatePath, 'utf8');
+
   app.on('error', (err, ctx) => {
     ctx = ctx || app.createAnonymousContext();
     if (config.appErrorFilter && !config.appErrorFilter(err, ctx)) return;
@@ -72,7 +75,6 @@ module.exports = app => {
         this.body = `<h2>${status} ${http.STATUS_CODES[status]}</h2>`;
         return;
       }
-
       // show simple error format for unittest
       if (app.config.env === 'unittest') {
         this.status = status;
@@ -80,7 +82,7 @@ module.exports = app => {
         return;
       }
 
-      const errorView = new ErrorView(this, err);
+      const errorView = new ErrorView(this, err, viewTemplate);
       this.body = errorView.toHTML();
     },
 
