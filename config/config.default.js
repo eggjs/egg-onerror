@@ -9,6 +9,8 @@ exports.onerror = {
   // If `appErrorFilter` return false, egg-onerror won't log this error.
   // You can logging in `appErrorFilter` and return false to override the default error logging.
   appErrorFilter: null,
+  // normalize your error response from error object
+  formatError: null,
   // default template path
   templatePath: path.join(__dirname, '../lib/onerror_page.mustache'),
 };

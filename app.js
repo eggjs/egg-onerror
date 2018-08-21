@@ -12,6 +12,8 @@ const {
 } = require('./lib/utils');
 
 module.exports = app => {
+  app.config.coreMiddleware.push('onerrorBizHandler');
+
   // logging error
   const config = app.config.onerror;
   const viewTemplate = fs.readFileSync(config.templatePath, 'utf8');
