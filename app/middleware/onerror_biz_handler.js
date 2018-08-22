@@ -1,41 +1,51 @@
 'use strict';
 
 const { EggError, ErrorType } = require('egg-errors');
+const { accepts } = require('./lib/utils');
 
 module.exports = (_, app) => {
-  const formatError = app.config.onerror.formatError || defaultFormat;
+  const biz = app.config.onerror.biz;
 
   return async function onerrorBizHandler(ctx, next) {
     try {
       await next();
     } catch (err) {
+      const fn = app.config.onerror.accepts || accepts;
+      const contentType = fn(ctx);
+
       const type = EggError.getType(err);
       switch (type) {
-        case ErrorType.ERROR:
-          await handleError(ctx, err);
+        case ErrorType.ERROR: {
+          ctx.status = err.status || 500;
+          ctx.body = format(err, contentType);
           break;
+        }
 
-        case ErrorType.EXCEPTION:
-          await handleException(ctx, err);
+        case ErrorType.EXCEPTION: {
+          ctx.logger.error(err);
+          err.status = 500;
+          ctx.body = format(err, contentType);
           break;
+        }
 
         case ErrorType.BUILTIN:
         default:
           throw err;
       }
     }
+
+    function format(err, contentType) {
+      if (contentType === 'json' && biz.formatJSON) {
+        ctx.body = biz.formatJSON(err);
+      if (contentType === 'text' && biz.formatText) {
+        ctx.body = biz.formatText(err);
+      if (contentType === 'html' && biz.formatHtml) {
+        ctx.body = biz.formatHtml(err);
+      } else {
+        ctx.body = defaultFormat(err);
+      }
+    }
   };
-
-  async function handleError(ctx, err) {
-    ctx.status = err.status || 500;
-    ctx.body = formatError(err);
-  }
-
-  async function handleException(ctx, err) {
-    ctx.logger.error(err);
-    err.status = 500;
-    ctx.body = formatError(err);
-  }
 
 };
 
