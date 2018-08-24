@@ -12,12 +12,7 @@ exports.onerror = {
   // default template path
   templatePath: path.join(__dirname, '../lib/onerror_page.mustache'),
   // normalize your error response from error object
-  biz: {
-    formatJSON: null,
-    formatText: null,
-    formatHtml: null,
-  },
-  system: {
+  application: {
     formatJSON: null,
     formatText: null,
     formatHtml: null,

@@ -25,6 +25,7 @@
   ],
   "dependencies": {
     "cookie": "^0.3.1",
+    "egg-errors": "^1.0.1",
     "koa-onerror": "^4.0.0",
     "mustache": "^2.3.0",
     "stack-trace": "^0.0.10"

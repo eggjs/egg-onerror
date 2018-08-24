@@ -45,9 +45,9 @@ module.exports = app => {
 
   const errorOptions = {
     // support customize accepts function
-    accepts() {
+    accepts(...args) {
       const fn = config.accepts || accepts;
-      return fn(this);
+      return fn(this, ...args);
     },
 
     html(err) {
