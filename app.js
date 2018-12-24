@@ -12,7 +12,7 @@ const {
 } = require('./lib/utils');
 
 module.exports = app => {
-  app.config.coreMiddleware.push('onerrorBizHandler');
+  app.config.coreMiddleware.push('eggOnerrorHandler');
 
   // logging error
   const config = app.config.onerror;

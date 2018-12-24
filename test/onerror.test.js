@@ -474,27 +474,4 @@ describe('test/onerror.test.js', () => {
 
   });
 
-
-  describe.only('biz error', () => {
-    let app;
-    before(() => {
-      app = mm.app({
-        baseDir: 'onerror-biz',
-      });
-      return app.ready();
-    });
-    after(() => app.close());
-
-    it('should format error', async () => {
-      await app.httpRequest()
-        .get('/error')
-        .set('Accept', 'application/json')
-        .expect({
-
-        })
-        .expect(200);
-    });
-
-  });
-
 });

@@ -11,10 +11,24 @@ exports.onerror = {
   appErrorFilter: null,
   // default template path
   templatePath: path.join(__dirname, '../lib/onerror_page.mustache'),
-  // normalize your error response from error object
-  application: {
-    formatJSON: null,
-    formatText: null,
-    formatHtml: null,
+  // handler your error response
+  errorHandler: {
+    enable: false,
+    json: (ctx, err) => {
+      ctx.status = err.status || 500;
+      ctx.body = {
+        code: err.code,
+        message: err.message,
+      };
+    },
+    text: (ctx, err) => {
+      ctx.status = err.status || 500;
+      ctx.body = err.message;
+    },
+    html: (ctx, err) => {
+      ctx.status = err.status || 500;
+      ctx.body = `<h2>${err.code}</h2>\n<div>${err.message}</div>`;
+    },
+    any: null,
   },
 };
