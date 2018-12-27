@@ -1,11 +1,11 @@
 'use strict';
 
-const fs = require('fs');
-const pedding = require('pedding');
+// const fs = require('fs');
+// const pedding = require('pedding');
 const mm = require('egg-mock');
-const rimraf = require('rimraf');
-const path = require('path');
-const assert = require('assert');
+// const rimraf = require('rimraf');
+// const path = require('path');
+// const assert = require('assert');
 
 describe.only('test/error_handler.test.js', () => {
   describe.only('default error handler', () => {
@@ -42,7 +42,7 @@ describe.only('test/error_handler.test.js', () => {
         await app.httpRequest()
           .get('/error')
           .set('Accept', 'text/html')
-          .expect('error')
+          .expect('<h2>UNKNOWN_ERROR</h2>\n<div>error</div>')
           .expect(500);
       });
     });

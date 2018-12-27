@@ -1,9 +1,9 @@
 'use strict';
 
-const { EggError, ErrorType, InternalServerErrorError } = require('egg-errors');
+const { EggError, ErrorType, InternalServerError } = require('egg-errors');
 const accepts = require('accepts');
 
-class UnknownError extends InternalServerErrorError {
+class UnknownError extends InternalServerError {
   constructor(message) {
     super(message);
     this.message = message;
