@@ -7,8 +7,8 @@ const mm = require('egg-mock');
 // const path = require('path');
 // const assert = require('assert');
 
-describe.only('test/error_handler.test.js', () => {
-  describe.only('default error handler', () => {
+describe('test/error_handler.test.js', () => {
+  describe('default error handler', () => {
     let app;
     before(() => {
       app = mm.app({
@@ -45,6 +45,13 @@ describe.only('test/error_handler.test.js', () => {
           .expect('<h2>UNKNOWN_ERROR</h2>\n<div>error</div>')
           .expect(500);
       });
+
+      it('should handler error without accept', async () => {
+        await app.httpRequest()
+          .get('/error')
+          .expect('<h2>UNKNOWN_ERROR</h2>\n<div>error</div>')
+          .expect(500);
+      });
     });
 
     describe('egg error', () => {
@@ -71,6 +78,13 @@ describe.only('test/error_handler.test.js', () => {
         await app.httpRequest()
           .get('/egg-error')
           .set('Accept', 'text/html')
+          .expect('<h2>CUSTOM_ERROR</h2>\n<div>egg error</div>')
+          .expect(422);
+      });
+
+      it('should handler egg error without accept', async () => {
+        await app.httpRequest()
+          .get('/egg-error')
           .expect('<h2>CUSTOM_ERROR</h2>\n<div>egg error</div>')
           .expect(422);
       });
@@ -103,11 +117,18 @@ describe.only('test/error_handler.test.js', () => {
           .expect('<h2>CUSTOM_EXCEPTION</h2>\n<div>egg exception</div>')
           .expect(500);
       });
+
+      it('should handler egg exception without accept', async () => {
+        await app.httpRequest()
+          .get('/egg-exception')
+          .expect('<h2>CUSTOM_EXCEPTION</h2>\n<div>egg exception</div>')
+          .expect(500);
+      });
     });
 
   });
 
-  describe('default error handler', () => {
+  describe('custom error handler', () => {
     let app;
     before(() => {
       app = mm.app({
@@ -117,14 +138,113 @@ describe.only('test/error_handler.test.js', () => {
     });
     after(() => app.close());
 
-    it('should format error', async () => {
-      await app.httpRequest()
-        .get('/error')
-        .set('Accept', 'application/json')
-        .expect({
+    describe('error', () => {
+      it('should handler error when accept json', async () => {
+        await app.httpRequest()
+          .get('/error')
+          .set('Accept', 'application/json')
+          .expect({
+            code: 'UNKNOWN_ERROR',
+            message: 'custom error',
+          })
+          .expect(500);
+      });
 
-        })
-        .expect(200);
+      it('should handler error when accept text', async () => {
+        await app.httpRequest()
+          .get('/error')
+          .set('Accept', 'text/plain')
+          .expect('custom error')
+          .expect(500);
+      });
+
+      it('should handler error when accept html', async () => {
+        await app.httpRequest()
+          .get('/error')
+          .set('Accept', 'text/html')
+          .expect('<h2>UNKNOWN_ERROR</h2>\n<div>custom error</div>')
+          .expect(500);
+      });
+
+      it('should handler error without accept', async () => {
+        await app.httpRequest()
+          .get('/error')
+          .expect('<h2>UNKNOWN_ERROR</h2>\n<div>custom error</div>')
+          .expect(500);
+      });
+    });
+
+    describe('egg error', () => {
+      it('should handler egg error when accept json', async () => {
+        await app.httpRequest()
+          .get('/egg-error')
+          .set('Accept', 'application/json')
+          .expect({
+            code: 'CUSTOM_ERROR',
+            message: 'custom egg error',
+          })
+          .expect(422);
+      });
+
+      it('should handler egg error when accept text', async () => {
+        await app.httpRequest()
+          .get('/egg-error')
+          .set('Accept', 'text/plain')
+          .expect('custom egg error')
+          .expect(422);
+      });
+
+      it('should handler egg error when accept html', async () => {
+        await app.httpRequest()
+          .get('/egg-error')
+          .set('Accept', 'text/html')
+          .expect('<h2>CUSTOM_ERROR</h2>\n<div>custom egg error</div>')
+          .expect(422);
+      });
+
+      it('should handler egg error without accept', async () => {
+        await app.httpRequest()
+          .get('/egg-error')
+          .set('Accept', 'text/html')
+          .expect('<h2>CUSTOM_ERROR</h2>\n<div>custom egg error</div>')
+          .expect(422);
+      });
+    });
+
+    describe('egg exception', () => {
+      it('should handler egg exception when accept json', async () => {
+        await app.httpRequest()
+          .get('/egg-exception')
+          .set('Accept', 'application/json')
+          .expect({
+            code: 'CUSTOM_EXCEPTION',
+            message: 'custom egg exception',
+          })
+          .expect(500);
+      });
+
+      it('should handler egg exception when accept text', async () => {
+        await app.httpRequest()
+          .get('/egg-exception')
+          .set('Accept', 'text/plain')
+          .expect('custom egg exception')
+          .expect(500);
+      });
+
+      it('should handler egg exception when accept html', async () => {
+        await app.httpRequest()
+          .get('/egg-exception')
+          .set('Accept', 'text/html')
+          .expect('<h2>CUSTOM_EXCEPTION</h2>\n<div>custom egg exception</div>')
+          .expect(500);
+      });
+
+      it('should handler egg exception without accept', async () => {
+        await app.httpRequest()
+          .get('/egg-exception')
+          .expect('<h2>CUSTOM_EXCEPTION</h2>\n<div>custom egg exception</div>')
+          .expect(500);
+      });
     });
   });
 });
