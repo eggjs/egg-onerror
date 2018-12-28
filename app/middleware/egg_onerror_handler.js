@@ -13,10 +13,10 @@ class UnknownError extends InternalServerError {
 
 module.exports = (_, app) => {
   const errorHandler = app.config.onerror.errorHandler;
-  const acceptFn = app.config.onerror.accepts ||
+  const acceptContentType = app.config.onerror.accepts ||
     ((ctx, ...args) => accepts(ctx.req).type(args));
 
-  return async function onerrorBizHandler(ctx, next) {
+  return async function bizErrorHandler(ctx, next) {
     if (errorHandler.enable !== true) return next();
 
     try {
@@ -26,6 +26,7 @@ module.exports = (_, app) => {
       const errorType = EggError.getType(err);
       switch (errorType) {
         case ErrorType.ERROR: break;
+
         // if error is an EggError Exception, it will pring error log
         case ErrorType.EXCEPTION: {
           ctx.logger.error(err);
@@ -33,6 +34,7 @@ module.exports = (_, app) => {
           err.status = 500;
           break;
         }
+
         // if error is not recognized by EggError,
         // it will be converted to UnknownError
         case ErrorType.BUILTIN: {
@@ -40,13 +42,13 @@ module.exports = (_, app) => {
           ctx.logger.error(err);
           break;
         }
+
         // getType not work
         default:
-          throw err;
       }
 
       // handle the error
-      const contentType = acceptFn(ctx, 'html', 'text', 'json');
+      const contentType = acceptContentType(ctx, 'html', 'text', 'json');
 
       if (contentType === 'json' && errorHandler.json) {
         await errorHandler.json(ctx, err);
@@ -56,6 +58,8 @@ module.exports = (_, app) => {
         await errorHandler.html(ctx, err);
       } else if (errorHandler.any) {
         await errorHandler.any(ctx, err);
+      } else {
+        throw err;
       }
     }
   };

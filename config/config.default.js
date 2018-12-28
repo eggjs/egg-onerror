@@ -14,21 +14,9 @@ exports.onerror = {
   // handler your error response
   errorHandler: {
     enable: false,
-    json: (ctx, err) => {
-      ctx.status = err.status || 500;
-      ctx.body = {
-        code: err.code,
-        message: err.message,
-      };
-    },
-    text: (ctx, err) => {
-      ctx.status = err.status || 500;
-      ctx.body = err.message;
-    },
-    html: (ctx, err) => {
-      ctx.status = err.status || 500;
-      ctx.body = `<h2>${err.code}</h2>\n<div>${err.message}</div>`;
-    },
+    json: null,
+    text: null,
+    html: null,
     any: null,
   },
 };

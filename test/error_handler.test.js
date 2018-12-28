@@ -19,109 +19,119 @@ describe('test/error_handler.test.js', () => {
     after(() => app.close());
 
     describe('error', () => {
-      it('should handler error when accept json', async () => {
+      it('should handler error', async () => {
         await app.httpRequest()
           .get('/error')
           .set('Accept', 'application/json')
           .expect({
             code: 'UNKNOWN_ERROR',
-            message: 'error',
+            message: 'any error',
+          })
+          .expect(500);
+
+        await app.httpRequest()
+          .get('/error')
+          .set('Accept', 'text/plain')
+          .expect({
+            code: 'UNKNOWN_ERROR',
+            message: 'any error',
+          })
+          .expect(500);
+
+        await app.httpRequest()
+          .get('/error')
+          .set('Accept', 'text/html')
+          .expect({
+            code: 'UNKNOWN_ERROR',
+            message: 'any error',
+          })
+          .expect(500);
+
+        await app.httpRequest()
+          .get('/error')
+          .expect({
+            code: 'UNKNOWN_ERROR',
+            message: 'any error',
           })
           .expect(500);
       });
 
-      it('should handler error when accept text', async () => {
-        await app.httpRequest()
-          .get('/error')
-          .set('Accept', 'text/plain')
-          .expect('error')
-          .expect(500);
-      });
-
-      it('should handler error when accept html', async () => {
-        await app.httpRequest()
-          .get('/error')
-          .set('Accept', 'text/html')
-          .expect('<h2>UNKNOWN_ERROR</h2>\n<div>error</div>')
-          .expect(500);
-      });
-
-      it('should handler error without accept', async () => {
-        await app.httpRequest()
-          .get('/error')
-          .expect('<h2>UNKNOWN_ERROR</h2>\n<div>error</div>')
-          .expect(500);
-      });
     });
 
     describe('egg error', () => {
-      it('should handler egg error when accept json', async () => {
+      it('should handler egg error', async () => {
         await app.httpRequest()
           .get('/egg-error')
           .set('Accept', 'application/json')
           .expect({
             code: 'CUSTOM_ERROR',
-            message: 'egg error',
+            message: 'any egg error',
           })
           .expect(422);
-      });
 
-      it('should handler egg error when accept text', async () => {
         await app.httpRequest()
           .get('/egg-error')
           .set('Accept', 'text/plain')
-          .expect('egg error')
+          .expect({
+            code: 'CUSTOM_ERROR',
+            message: 'any egg error',
+          })
           .expect(422);
-      });
 
-      it('should handler egg error when accept html', async () => {
         await app.httpRequest()
           .get('/egg-error')
           .set('Accept', 'text/html')
-          .expect('<h2>CUSTOM_ERROR</h2>\n<div>egg error</div>')
+          .expect({
+            code: 'CUSTOM_ERROR',
+            message: 'any egg error',
+          })
           .expect(422);
-      });
 
-      it('should handler egg error without accept', async () => {
         await app.httpRequest()
           .get('/egg-error')
-          .expect('<h2>CUSTOM_ERROR</h2>\n<div>egg error</div>')
+          .expect({
+            code: 'CUSTOM_ERROR',
+            message: 'any egg error',
+          })
           .expect(422);
       });
     });
 
     describe('egg exception', () => {
-      it('should handler egg exception when accept json', async () => {
+      it('should handler egg exception', async () => {
         await app.httpRequest()
           .get('/egg-exception')
           .set('Accept', 'application/json')
           .expect({
             code: 'CUSTOM_EXCEPTION',
-            message: 'egg exception',
+            message: 'any egg exception',
           })
           .expect(500);
-      });
 
-      it('should handler egg exception when accept text', async () => {
         await app.httpRequest()
           .get('/egg-exception')
           .set('Accept', 'text/plain')
-          .expect('egg exception')
+          .expect({
+            code: 'CUSTOM_EXCEPTION',
+            message: 'any egg exception',
+          })
           .expect(500);
-      });
 
-      it('should handler egg exception when accept html', async () => {
         await app.httpRequest()
           .get('/egg-exception')
           .set('Accept', 'text/html')
-          .expect('<h2>CUSTOM_EXCEPTION</h2>\n<div>egg exception</div>')
+          .expect({
+            code: 'CUSTOM_EXCEPTION',
+            message: 'any egg exception',
+          })
           .expect(500);
-      });
 
-      it('should handler egg exception without accept', async () => {
         await app.httpRequest()
           .get('/egg-exception')
-          .expect('<h2>CUSTOM_EXCEPTION</h2>\n<div>egg exception</div>')
+          .expect({
+            code: 'CUSTOM_EXCEPTION',
+            message: 'any egg exception',
+          })
           .expect(500);
       });
     });
