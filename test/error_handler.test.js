@@ -1,18 +1,14 @@
 'use strict';
 
-// const fs = require('fs');
-// const pedding = require('pedding');
 const mm = require('egg-mock');
-// const rimraf = require('rimraf');
-// const path = require('path');
-// const assert = require('assert');
+const assert = require('assert');
 
 describe('test/error_handler.test.js', () => {
   describe('default error handler', () => {
     let app;
     before(() => {
       app = mm.app({
-        baseDir: 'default-error-handler',
+        baseDir: 'any-error-handler',
       });
       return app.ready();
     });
@@ -257,4 +253,34 @@ describe('test/error_handler.test.js', () => {
       });
     });
   });
+
+  describe('unmatch error handler', () => {
+    let app;
+    before(() => {
+      app = mm.app({
+        baseDir: 'unmatch-error-handler',
+      });
+      return app.ready();
+    });
+    after(() => app.close());
+
+    it('should throw when accept json', async () => {
+      const res = await app.httpRequest()
+        .get('/error')
+        .set('Accept', 'application/json')
+        .expect(500);
+      assert(res.body.code === 'UNKNOWN_ERROR');
+      assert(res.body.message === 'error');
+    });
+
+    it('should throw when accept html', async () => {
+      const res = await app.httpRequest()
+        .get('/error')
+        .set('Accept', 'text/html')
+        .expect(500);
+
+      assert(res.text.includes('UnknownError: error'));
+    });
+  });
+
 });

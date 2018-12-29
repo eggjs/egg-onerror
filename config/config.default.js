@@ -2,6 +2,8 @@
 const path = require('path');
 
 exports.onerror = {
+  // function that can customize which content type will be accept
+  accepts: null,
   // 5xx error will redirect to ${errorPageUrl}
   // won't redirect in local env
   errorPageUrl: '',
