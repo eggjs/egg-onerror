@@ -17,8 +17,6 @@ module.exports = (_, app) => {
     ((ctx, ...args) => accepts(ctx.req).type(args));
 
   return async function bizErrorHandler(ctx, next) {
-    if (errorHandler.enable !== true) return next();
-
     try {
       await next();
     } catch (e) {

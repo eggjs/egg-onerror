@@ -18,11 +18,13 @@ module.exports = class {
   configDidLoad() {
     const app = this.app;
 
-    app.config.coreMiddleware.push('eggOnerrorHandler');
-
-    // logging error
     const config = app.config.onerror;
     const viewTemplate = fs.readFileSync(config.templatePath, 'utf8');
+
+    // push biz error middleware
+    if (config.errorHandler.enable === true) {
+      app.config.coreMiddleware.push('eggOnerrorHandler');
+    }
 
     app.on('error', (err, ctx) => {
       ctx = ctx || app.createAnonymousContext();
@@ -70,7 +72,7 @@ module.exports = class {
           if (status >= 500) {
             if (errorPageUrl) {
               const statusQuery =
-                (errorPageUrl.indexOf('?') > 0 ? '&' : '?') +
+                (errorPageUrl.includes('?') ? '&' : '?') +
                 `real_status=${status}`;
               return this.redirect(errorPageUrl + statusQuery);
             }
