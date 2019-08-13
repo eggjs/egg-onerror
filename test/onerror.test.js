@@ -473,4 +473,36 @@ describe('test/onerror.test.js', () => {
     });
 
   });
+
+  describe('customize isProd detection', () => {
+
+    let app = null;
+    before(() => {
+      mm.consoleLevel('NONE');
+      app = mm.app({
+        baseDir: 'onerror-custom-isProd',
+      });
+      return app.ready();
+    });
+
+    after(() => app.close());
+
+    afterEach(mm.restore);
+
+    it('should show detail error information on non-prod env', () => {
+      mm(app.config, 'env', 'dev');
+      return app.httpRequest()
+        .get('/500')
+        .expect(/hi, this custom 500 page/)
+        .expect(500);
+    });
+
+    it('should hide detail error information on prod env', () => {
+      mm(app.config, 'env', 'prod');
+      return app.httpRequest()
+        .get('/500')
+        .expect('<h2>Internal Server Error, real status: 500</h2>')
+        .expect(500);
+    });
+  });
 });
