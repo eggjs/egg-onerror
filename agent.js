@@ -1,8 +1,13 @@
 'use strict';
 
-module.exports = agent => {
-  // should watch error event
-  agent.on('error', err => {
-    agent.coreLogger.error(err);
-  });
+module.exports = class {
+  constructor(agent) {
+    this.agent = agent;
+  }
+  configDidLoad() {
+    // should watch error event
+    this.agent.on('error', err => {
+      this.agent.coreLogger.error(err);
+    });
+  }
 };

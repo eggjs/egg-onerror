@@ -24,19 +24,21 @@
     "onerror"
   ],
   "dependencies": {
+    "accepts": "^1.3.5",
     "cookie": "^0.3.1",
-    "koa-onerror": "^4.0.0",
-    "mustache": "^2.3.0",
+    "egg-errors": "^2.1.0",
+    "koa-onerror": "^4.1.0",
+    "mustache": "^3.0.1",
     "stack-trace": "^0.0.10"
   },
   "devDependencies": {
-    "autod": "^3.0.0",
+    "autod": "^3.0.1",
     "egg": "next",
-    "egg-bin": "^4.3.5",
-    "egg-ci": "^1.8.0",
-    "egg-mock": "^3.13.1",
-    "eslint": "^4.11.0",
-    "eslint-config-egg": "^5.1.1",
+    "egg-bin": "^4.9.0",
+    "egg-ci": "^1.11.0",
+    "egg-mock": "^3.21.0",
+    "eslint": "^5.11.1",
+    "eslint-config-egg": "^7.1.0",
     "pedding": "^1.1.0",
     "rimraf": "^2.6.2"
   },
