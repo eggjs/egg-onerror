@@ -11,4 +11,10 @@ exports.onerror = {
   appErrorFilter: null,
   // default template path
   templatePath: path.join(__dirname, '../lib/onerror_page.mustache'),
+  // Set displayErrors to true, to display erros.
+  // If it's not set, then use the default isProd logic for it.
+  displayErrors: null,
+  // Sections you want to show in error page.
+  // Default to show all sections.
+  displaySections: [ 'CodeFrames', 'Headers', 'Cookies', 'AppInfo' ],
 };

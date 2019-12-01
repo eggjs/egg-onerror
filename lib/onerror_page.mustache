@@ -580,6 +580,7 @@
 
       <img class="error-logo" src="https://zos.alipayobjects.com/rmsportal/JFKAMfmPehWfhBPdCjrw.svg"/>
 
+      {{#displayCodeFramesSection}}
       <div class="error-frames">
         <div class="frame-preview is-hidden">
           <div id="frame-file"></div>
@@ -593,8 +594,8 @@
             <label for="frames-filter">Show all frames</label>
           </div>
 
+          {{#frames}}
           <div class="frames-list">
-            {{#frames}}
               {{index}}
               <div class="frame-row {{classes}}">
                 <div class="frame-row-filepath">
@@ -619,8 +620,8 @@
           </div>
         </div>
       </div>
+      {{/displayCodeFramesSection}}
     </section>
-
     <section class="request-details">
       <h2 class="request-title"> Request Details </h2>
       <div class="table">
@@ -645,25 +646,33 @@
         </div>
       </div>
 
+
+      {{#displayHeadersSection}}
       <h2 class="request-title"> Headers </h2>
       <div class="table">
-        {{#request.headers}}
+          {{#request.headers}}
           <div class="tr">
             <div class="td title">{{ key }}</div>
             <div class="td content">{{ value }}</div>
           </div>
-        {{/request.headers}}
+          {{/request.headers}}
       </div>
+      {{/displayHeadersSection}}
 
+
+      {{#displayCookiesSection}}
       <h2 class="request-title"> Cookies </h2>
       <div class="table">
-        {{#request.cookies}}
+          {{#request.cookies}}
           <div class="tr">
             <div class="td title">{{ key }}</div>
             <div class="td content">{{ value }}</div>
           </div>
-        {{/request.cookies}}
+          {{/request.cookies}}
       </div>
+      {{/displayCookiesSection}}
+
+      {{#displayAppInfoSection}}
       <h2 class="request-title"> AppInfo </h2>
       <div class="table">
         <div class="tr">
@@ -676,7 +685,8 @@
             <pre class="line-numbers"><code class="language-json">{{ appInfo.config }}</code></pre>
           </div>
         </div>
-      </<div>
+      </div>
+      {{/displayAppInfoSection}}
     </section>
 
     <script type="text/javascript">

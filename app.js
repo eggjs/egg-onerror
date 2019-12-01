@@ -54,10 +54,19 @@ module.exports = app => {
         ? config.errorPageUrl(err, this)
         : config.errorPageUrl;
 
+      // If it's null, then use default isProd logic
+      let displayErrors = config.displayErrors === null ? !isProd(app) : config.displayErrors;
+
+      // It also can be a function
+      if (typeof displayErrors === 'function') {
+        displayErrors = displayErrors.call(app);
+      }
+
       // keep the real response status
       this.realStatus = status;
       // don't respond any error message in production env
-      if (isProd(app)) {
+      // if displayErrors set false, or unset, then use default logic
+      if (!displayErrors) {
         // 5xx
         if (status >= 500) {
           if (errorPageUrl) {
