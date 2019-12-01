@@ -382,6 +382,70 @@ describe('test/onerror.test.js', () => {
     });
   });
 
+  describe('onerror.display-error', () => {
+    let app;
+    before(() => {
+      process.env.SHOW_ERRORS = 1;
+      mm.env('prod');
+      mm.consoleLevel('NONE');
+      app = mm.app({
+        baseDir: 'onerror-display-error',
+      });
+      return app.ready();
+    });
+    after(() => {
+      delete process.env.SHOW_ERRORS;
+      app.close();
+    });
+
+    it('should 500 full html', () => {
+      return app.httpRequest()
+        .get('/500')
+        .expect(500)
+        .expect(/hi, this custom 500 page/);
+    });
+
+    it('should works as a function', () => {
+      mm(app.config.onerror, 'displayErrors', () => false);
+      return app.httpRequest()
+        .get('/500')
+        .expect(res => {
+          assert.equal(res.text.includes('Internal Server Error'), true);
+        })
+        .expect(500);
+    });
+
+    it('should no headers in 500 full html', () => {
+      mm(app.config.onerror, 'displaySections', [ 'CodeFrames', 'Cookies', 'AppInfo' ]);
+      mm(app.config.onerror, 'displayErrors', true);
+      return app.httpRequest()
+        .get('/500')
+        .expect(res => {
+          assert.equal(res.text.includes('<h2 class="request-title"> Cookies </h2>'), true);
+          assert.equal(res.text.includes('<div class="error-frames">'), true);
+          assert.equal(res.text.includes('<h2 class="request-title"> AppInfo </h2>'), true);
+          assert.equal(res.text.includes('<h2 class="request-title"> Headers </h2>'), false);
+        })
+        .expect(500)
+        .expect(/hi, this custom 500 page/);
+    });
+
+    it('should only have headers in 500 full html', () => {
+      mm(app.config.onerror, 'displaySections', [ 'Headers' ]);
+      mm(app.config.onerror, 'displayErrors', true);
+      return app.httpRequest()
+        .get('/500')
+        .expect(res => {
+          assert.equal(res.text.includes('<h2 class="request-title"> Cookies </h2>'), false);
+          assert.equal(res.text.includes('<div class="error-frames">'), false);
+          assert.equal(res.text.includes('<h2 class="request-title"> AppInfo </h2>'), false);
+          assert.equal(res.text.includes('<h2 class="request-title"> Headers </h2>'), true);
+        })
+        .expect(500)
+        .expect(/hi, this custom 500 page/);
+    });
+  });
+
   describe('appErrorFilter', () => {
     let app;
     before(() => {
