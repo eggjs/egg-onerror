@@ -39,6 +39,7 @@ $ npm i egg-onerror
 - `text: Function` - customize text error handler.
 - `json: Function` - customize json error handler.
 - `jsonp: Function` - customize jsonp error handler.
+- `isProd: Function` - customize logic to detect if app is running on production environment. [Example](./test/fixtures/onerror-custom-isProd/config/config.default.js#L4)
 
 ```js
 // config.default.js
