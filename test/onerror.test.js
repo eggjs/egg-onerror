@@ -46,6 +46,13 @@ describe('test/onerror.test.js', () => {
       .expect(500);
   });
 
+  it('should handle not exists file in stack without error', () => {
+    return app.httpRequest()
+      .get('/unknownFile')
+      .expect(/<div class="context">test error<\/div>/)
+      .expect(500);
+  });
+
   it('should handle escape xss', () => {
     return app.httpRequest()
       .get('/?message=<script></script>')
@@ -277,7 +284,7 @@ describe('test/onerror.test.js', () => {
       yield app.httpRequest()
         .post('/body_parser')
         .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({ foo: new Buffer(1024 * 100).fill(1).toString() })
+        .send({ foo: new Buffer(1024 * 1000).fill(1).toString() })
         .expect(/request entity too large/)
         .expect(413);
       yield app.close();

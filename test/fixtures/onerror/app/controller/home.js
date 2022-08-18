@@ -14,6 +14,12 @@ exports.index = function* () {
   throw err;
 };
 
+exports.unknownFile = function* () {
+  const err = new Error('test error');
+  err.stack = err.stack.replace(/(controller\/home\.)js/, '$1ts');
+  throw err;
+};
+
 exports.csrf = function* () {
   this.set('x-csrf', this.csrf);
   this.body = 'test';
