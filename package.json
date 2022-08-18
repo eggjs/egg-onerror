@@ -52,7 +52,7 @@
     "autod": "autod"
   },
   "ci": {
-    "version": "8, 9"
+    "version": "14, 16"
   },
   "author": "dead_horse"
 }
