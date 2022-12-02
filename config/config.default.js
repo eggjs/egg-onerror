@@ -2,6 +2,8 @@
 const path = require('path');
 
 exports.onerror = {
+  // function that can customize which content type will be accept
+  accepts: null,
   // 5xx error will redirect to ${errorPageUrl}
   // won't redirect in local env
   errorPageUrl: '',
@@ -11,4 +13,12 @@ exports.onerror = {
   appErrorFilter: null,
   // default template path
   templatePath: path.join(__dirname, '../lib/onerror_page.mustache'),
+  // handler your error response
+  errorHandler: {
+    enable: false,
+    json: null,
+    text: null,
+    html: null,
+    any: null,
+  },
 };
