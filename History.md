@@ -1,4 +1,10 @@
 
+2.2.0 / 2022-12-11
+==================
+
+**features**
+  * [[`a31167c`](http://github.com/eggjs/egg-onerror/commit/a31167ccf6ecc35d51b129299271588b32a51350)] - 👌 IMPROVE: Use currentContext first (#36) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.1.1 / 2022-08-18
 ==================
 
