@@ -1,6 +1,6 @@
 'use strict';
 
-exports.index = function* () {
+exports.index = async () => {
   const err = new Error('test error');
   if (this.query.code) {
     err.code = this.query.code;
@@ -13,11 +13,11 @@ exports.index = function* () {
   }
   throw err;
 };
-exports.csrf = function* () {
+exports.csrf = async () => {
   this.set('x-csrf', this.csrf);
   this.body = 'test';
 };
-exports.test = function* () {
+exports.test = async () => {
   const err = new SyntaxError('syntax error');
   if (this.query.status) {
     err.status = Number(this.query.status);

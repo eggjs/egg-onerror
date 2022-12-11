@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function* () {
+module.exports = async () => {
   const err = new Error('test error');
   if (this.query.status) {
     err.status = Number(this.query.status);
