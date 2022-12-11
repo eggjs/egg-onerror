@@ -1,6 +1,6 @@
 module.exports = () => {
-  return async function(next) {
+  return async function(ctx, next) {
     await next();
-    this.logger.info('log something, then error happend.');
+    ctx.logger.info('log something, then error happend.');
   };
 };

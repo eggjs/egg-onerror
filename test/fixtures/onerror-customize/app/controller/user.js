@@ -1,12 +1,10 @@
-'use strict';
-
-module.exports = async () => {
+module.exports = async ctx => {
   const err = new Error('test error');
-  if (this.query.status) {
-    err.status = Number(this.query.status);
+  if (ctx.query.status) {
+    err.status = Number(ctx.query.status);
   }
-  if (this.query.errors) {
-    err.errors = this.query.errors;
+  if (ctx.query.errors) {
+    err.errors = ctx.query.errors;
   }
   throw err;
 };

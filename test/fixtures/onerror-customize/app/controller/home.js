@@ -1,28 +1,26 @@
-'use strict';
-
-exports.index = async () => {
+exports.index = async ctx => {
   const err = new Error('test error');
-  if (this.query.code) {
-    err.code = this.query.code;
+  if (ctx.query.code) {
+    err.code = ctx.query.code;
   }
-  if (this.query.status) {
-    err.status = Number(this.query.status);
+  if (ctx.query.status) {
+    err.status = Number(ctx.query.status);
   }
-  if (this.query.message) {
-    err.message = this.query.message;
+  if (ctx.query.message) {
+    err.message = ctx.query.message;
   }
   throw err;
 };
 
-exports.csrf = async () => {
-  this.set('x-csrf', this.csrf);
-  this.body = 'test';
+exports.csrf = async ctx => {
+  ctx.set('x-csrf', ctx.csrf);
+  ctx.body = 'test';
 };
 
-exports.test = async () => {
+exports.test = async ctx => {
   const err = new SyntaxError('syntax error');
-  if (this.query.status) {
-    err.status = Number(this.query.status);
+  if (ctx.query.status) {
+    err.status = Number(ctx.query.status);
   }
   throw err;
 };

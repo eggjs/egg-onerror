@@ -407,10 +407,14 @@ describe('test/onerror.test.js', () => {
     });
 
     it('should custom log error log', async () => {
+      let lastMessage;
+      mm(app.logger, 'error', msg => {
+        lastMessage = msg;
+      });
       await app.httpRequest()
         .get('/?name=CustomError')
         .expect(500);
-      app.expectLog('error happened');
+      assert(lastMessage === 'error happened');
     });
 
     it('should default log error', async () => {
@@ -439,10 +443,10 @@ describe('test/onerror.test.js', () => {
     after(() => app.close());
 
     it('should log error', async () => {
-      console.log('app.stderr: %j', app.stderr);
-      console.log(app.stdout);
+      // console.log('app.stderr: %s', app.stderr);
+      // console.log(app.stdout);
       await app.close();
-      assert(/nodejs.Error: emit error/.test(app.stderr));
+      assert.match(app.stderr, /TypeError/);
     });
   });
 

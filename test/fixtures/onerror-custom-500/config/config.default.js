@@ -1,5 +1,3 @@
-'use strict';
-
 exports.onerror = {
   errorPageUrl: (_, ctx) => ctx.errorPageUrl || '/500',
 };
