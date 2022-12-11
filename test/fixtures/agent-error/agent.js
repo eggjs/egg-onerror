@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = agent => {
   const done = agent.readyCallback();
   setTimeout(() => {

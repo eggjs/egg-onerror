@@ -1,38 +1,36 @@
-'use strict';
-
-exports.index = function* () {
+exports.index = async ctx => {
   const err = new Error('test error');
-  if (this.query.code) {
-    err.code = this.query.code;
+  if (ctx.query.code) {
+    err.code = ctx.query.code;
   }
-  if (this.query.status) {
-    err.status = Number(this.query.status);
+  if (ctx.query.status) {
+    err.status = Number(ctx.query.status);
   }
-  if (this.query.message) {
-    err.message = this.query.message;
+  if (ctx.query.message) {
+    err.message = ctx.query.message;
   }
   throw err;
 };
 
-exports.unknownFile = function* () {
+exports.unknownFile = async () => {
   const err = new Error('test error');
   err.stack = err.stack.replace(/(controller\/home\.)js/, '$1ts');
   throw err;
 };
 
-exports.csrf = function* () {
-  this.set('x-csrf', this.csrf);
-  this.body = 'test';
+exports.csrf = async ctx => {
+  ctx.set('x-csrf', ctx.csrf);
+  ctx.body = 'test';
 };
 
-exports.test = function* () {
+exports.test = async ctx => {
   const err = new SyntaxError('syntax error');
-  if (this.query.status) {
-    err.status = Number(this.query.status);
+  if (ctx.query.status) {
+    err.status = Number(ctx.query.status);
   }
   throw err;
 };
 
-exports.jsonp = function* () {
+exports.jsonp = async () => {
   throw new Error('jsonp error');
 };

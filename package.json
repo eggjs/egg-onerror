@@ -30,29 +30,25 @@
     "stack-trace": "^0.0.10"
   },
   "devDependencies": {
-    "autod": "^3.0.0",
-    "egg": "next",
-    "egg-bin": "^4.3.5",
-    "egg-ci": "^1.8.0",
-    "egg-mock": "^3.13.1",
-    "eslint": "^4.11.0",
-    "eslint-config-egg": "^5.1.1",
-    "pedding": "^1.1.0",
-    "rimraf": "^2.6.2"
+    "egg": "^3.7.0",
+    "egg-bin": "^5.5.0",
+    "egg-ci": "^2.2.0",
+    "egg-mock": "^5.3.0",
+    "eslint": "^8.29.0",
+    "eslint-config-egg": "^12.1.0"
   },
   "engines": {
     "node": ">=8.0.0"
   },
   "scripts": {
     "test": "npm run lint -- --fix && npm run test-local",
-    "test-local": "egg-bin test",
-    "cov": "egg-bin cov",
+    "test-local": "egg-bin test --full-trace",
+    "cov": "egg-bin cov --full-trace",
     "lint": "eslint .",
-    "ci": "npm run lint && npm run cov",
-    "autod": "autod"
+    "ci": "npm run lint && npm run cov"
   },
   "ci": {
-    "version": "14, 16"
+    "version": "14, 16, 18"
   },
   "author": "dead_horse"
 }

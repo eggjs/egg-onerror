@@ -17,7 +17,9 @@ module.exports = app => {
   const viewTemplate = fs.readFileSync(config.templatePath, 'utf8');
 
   app.on('error', (err, ctx) => {
-    ctx = ctx || app.createAnonymousContext();
+    if (!ctx) {
+      ctx = app.currentContext || app.createAnonymousContext();
+    }
     if (config.appErrorFilter && !config.appErrorFilter(err, ctx)) return;
 
     const status = detectStatus(err);

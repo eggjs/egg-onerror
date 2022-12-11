@@ -1,5 +1,3 @@
-'use strict';
-
 exports.onerror = {
   errorPageUrl: 'https://eggjs.com/500.html',
   appErrorFilter(err, ctx) {
