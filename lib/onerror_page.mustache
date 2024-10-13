@@ -707,6 +707,13 @@ Prism.languages.typescript=Prism.languages.extend("javascript",{keyword:/\b(as|a
             $$('.frame-row.native-frame').forEach(function(node) {
               node.classList.remove('force-show');
             });
+            var activeFrame = $('.frame-row.active');
+            if (activeFrame.classList.contains('native-frame')) {
+              activeFrame.classList.remove('active');
+              var firstFrame = $$('.frame-row')[0];
+              firstFrame.classList.add('active');
+              showFrameContext(firstFrame);
+            }
           }
         }
         function displayFirstView () {
