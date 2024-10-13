@@ -20,7 +20,7 @@ Default error handling plugin for egg.
 ## Install
 
 ```bash
-$ npm i egg-onerror
+npm i egg-onerror
 ```
 
 ## Usage
@@ -28,7 +28,7 @@ $ npm i egg-onerror
 `egg-onerror` is on by default in egg. But you still can configure its properties to fits your scenarios.
 
 - `errorPageUrl: String or Function` - If user request html pages in production environment and unexpected error happened, it will redirect user to `errorPageUrl`.
-- `accepts: Function` - detect user's request accpet `json` or `html`.
+- `accepts: Function` - detect user's request accept `json` or `html`.
 - `all: Function` - customize error handler, if `all` present, negotiation will be ignored.
 - `html: Function` - customize html error handler.
 - `text: Function` - customize text error handler.
@@ -37,7 +37,7 @@ $ npm i egg-onerror
 
 ```js
 // config.default.js
-// errorPageUrl support funtion
+// errorPageUrl support function
 exports.onerror = {
   errorPageUrl: (err, ctx) => ctx.errorPageUrl || '/500',
 };
@@ -56,3 +56,9 @@ Please open an issue [here](https://github.com/eggjs/egg/issues).
 ## License
 
 [MIT](https://github.com/eggjs/egg-onerror/blob/master/LICENSE)
+
+## Contributors
+
+[![Contributors](https://contrib.rocks/image?repo=eggjs/egg-onerror)](https://github.com/eggjs/egg-onerror/graphs/contributors)
+
+Made with [contributors-img](https://contrib.rocks).
