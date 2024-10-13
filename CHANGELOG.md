@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/eggjs/egg-onerror/compare/v2.3.0...v2.3.1) (2024-10-13)
+
+
+### Bug Fixes
+
+* fixed show all frame ([#32](https://github.com/eggjs/egg-onerror/issues/32)) ([779fdfd](https://github.com/eggjs/egg-onerror/commit/779fdfdca6cb0dc04e79a4426d586c7d0b97e3f6))
+
 ## [2.3.0](https://github.com/eggjs/egg-onerror/compare/v2.2.0...v2.3.0) (2024-10-13)
 
 
