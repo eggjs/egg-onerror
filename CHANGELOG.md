@@ -1,3 +1,11 @@
+# Changelog
+
+## [2.3.0](https://github.com/eggjs/egg-onerror/compare/v2.2.0...v2.3.0) (2024-10-13)
+
+
+### Features
+
+* use cookie@0.7.2 ([#39](https://github.com/eggjs/egg-onerror/issues/39)) ([fc57345](https://github.com/eggjs/egg-onerror/commit/fc57345661ab6771d74ca5678438bfe7983929a1))
 
 2.2.0 / 2022-12-11
 ==================
