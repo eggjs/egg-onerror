@@ -1,3 +1,34 @@
+# Changelog
+
+## [2.3.1](https://github.com/eggjs/egg-onerror/compare/v2.3.0...v2.3.1) (2024-10-13)
+
+
+### Bug Fixes
+
+* fixed show all frame ([#32](https://github.com/eggjs/egg-onerror/issues/32)) ([779fdfd](https://github.com/eggjs/egg-onerror/commit/779fdfdca6cb0dc04e79a4426d586c7d0b97e3f6))
+
+## [2.3.0](https://github.com/eggjs/egg-onerror/compare/v2.2.0...v2.3.0) (2024-10-13)
+
+
+### Features
+
+* use cookie@0.7.2 ([#39](https://github.com/eggjs/egg-onerror/issues/39)) ([fc57345](https://github.com/eggjs/egg-onerror/commit/fc57345661ab6771d74ca5678438bfe7983929a1))
+
+2.2.0 / 2022-12-11
+==================
+
+**features**
+  * [[`a31167c`](http://github.com/eggjs/egg-onerror/commit/a31167ccf6ecc35d51b129299271588b32a51350)] - 👌 IMPROVE: Use currentContext first (#36) (fengmk2 <<fengmk2@gmail.com>>)
+
+2.1.1 / 2022-08-18
+==================
+
+**fixes**
+  * [[`00d2aa2`](http://github.com/eggjs/egg-onerror/commit/00d2aa2a073048dec9b9fc0fd0d868ecc0446830)] - fix: check file exists (#35) (吖猩 <<whxaxes@qq.com>>)
+
+**others**
+  * [[`54e12ba`](http://github.com/eggjs/egg-onerror/commit/54e12baa2eab9b47a2acd6ba0e6f6a0e55c92fc0)] - Create codeql-analysis.yml (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`55d27e6`](http://github.com/eggjs/egg-onerror/commit/55d27e60a9f1094e1a4555e82b47cab4799a57f8)] - chore: update travis (#31) (TZ | 天猪 <<atian25@qq.com>>)
 
 2.1.0 / 2018-06-12
 ==================

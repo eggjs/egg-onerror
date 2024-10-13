@@ -1,7 +1,6 @@
-'use strict';
-
 module.exports = app => {
   app.get('/', app.controller.home.index);
+  app.get('/unknownFile', app.controller.home.unknownFile);
   app.get('/csrf', app.controller.home.csrf);
   app.post('/test', app.controller.home.test);
   app.get('/user', app.controller.user);

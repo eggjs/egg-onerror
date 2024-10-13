@@ -1,6 +1,6 @@
 {
   "name": "egg-onerror",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "error handler for egg",
   "eggPlugin": {
     "name": "onerror",
@@ -24,21 +24,18 @@
     "onerror"
   ],
   "dependencies": {
-    "cookie": "^0.3.1",
+    "cookie": "^0.7.2",
     "koa-onerror": "^4.0.0",
     "mustache": "^2.3.0",
     "stack-trace": "^0.0.10"
   },
   "devDependencies": {
-    "autod": "^3.0.0",
-    "egg": "next",
-    "egg-bin": "^4.3.5",
-    "egg-ci": "^1.8.0",
-    "egg-mock": "^3.13.1",
-    "eslint": "^4.11.0",
-    "eslint-config-egg": "^5.1.1",
-    "pedding": "^1.1.0",
-    "rimraf": "^2.6.2"
+    "egg": "^3.7.0",
+    "egg-bin": "^5.5.0",
+    "egg-mock": "^5.3.0",
+    "eslint": "^8.29.0",
+    "eslint-config-egg": "^12.1.0",
+    "mocha": "^10.7.3"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -48,12 +45,7 @@
     "test-local": "egg-bin test",
     "cov": "egg-bin cov",
     "lint": "eslint .",
-    "ci": "npm run lint && npm run cov",
-    "autod": "autod"
-  },
-  "ci": {
-    "version": "8, 10, 12, 14, 16",
-    "type": "github"
+    "ci": "npm run lint && npm run cov"
   },
   "author": "dead_horse"
 }
