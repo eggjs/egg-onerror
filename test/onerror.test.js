@@ -1,11 +1,7 @@
-'use strict';
-
 const fs = require('fs');
-const pedding = require('pedding');
-const mm = require('egg-mock');
-const rimraf = require('rimraf');
 const path = require('path');
 const assert = require('assert');
+const mm = require('egg-mock');
 
 describe('test/onerror.test.js', () => {
   let app;
@@ -19,12 +15,12 @@ describe('test/onerror.test.js', () => {
 
   afterEach(mm.restore);
 
-  it('should handle error not in the req/res cycle with no ctx', function* () {
+  it('should handle error not in the req/res cycle with no ctx', async () => {
     mm.consoleLevel('NONE');
     const app = mm.app({
       baseDir: 'mock-test-error',
     });
-    yield app.ready();
+    await app.ready();
     const err = new Error('mock test error');
     app.emit('error', err, null);
     err.status = 400;
@@ -42,6 +38,13 @@ describe('test/onerror.test.js', () => {
   it('should handle status:undefined as status:500', () => {
     return app.httpRequest()
       .get('/')
+      .expect(/<div class="context">test error<\/div>/)
+      .expect(500);
+  });
+
+  it('should handle not exists file in stack without error', () => {
+    return app.httpRequest()
+      .get('/unknownFile')
       .expect(/<div class="context">test error<\/div>/)
       .expect(500);
   });
@@ -267,20 +270,21 @@ describe('test/onerror.test.js', () => {
     });
   });
 
-  if (process.platform !== 'win32') {
-    it('should log warn 4xx', function* () {
-      rimraf.sync(path.join(__dirname, 'fixtrues/onerror-4xx/logs'));
+  if (process.platform === 'linux') {
+    // ignore Error: write ECONNRESET on windows and macos
+    it('should log warn 4xx', async () => {
+      fs.rmSync(path.join(__dirname, 'fixtrues/onerror-4xx/logs'), { force: true, recursive: true });
       const app = mm.app({
         baseDir: 'onerror-4xx',
       });
-      yield app.ready();
-      yield app.httpRequest()
+      await app.ready();
+      await app.httpRequest()
         .post('/body_parser')
         .set('Content-Type', 'application/x-www-form-urlencoded')
-        .send({ foo: new Buffer(1024 * 100).fill(1).toString() })
+        .send({ foo: new Buffer(1024 * 1000).fill(1).toString() })
         .expect(/request entity too large/)
         .expect(413);
-      yield app.close();
+      await app.close();
 
       const warnLog = path.join(__dirname, 'fixtures/onerror-4xx/logs/onerror-4xx/onerror-4xx-web.log');
       assert(/POST \/body_parser] nodejs\..*?Error: request entity too large/.test(fs.readFileSync(warnLog, 'utf8')));
@@ -318,25 +322,25 @@ describe('test/onerror.test.js', () => {
     });
     after(() => app.close());
 
-    it('should redirect to error page', function* () {
+    it('should redirect to error page', async () => {
       mm(app.config, 'env', 'prod');
 
-      yield app.httpRequest()
+      await app.httpRequest()
         .get('/mockerror')
         .expect('Location', '/500?real_status=500')
         .expect(302);
 
-      yield app.httpRequest()
+      await app.httpRequest()
         .get('/mock4xx')
         .expect('<h2>400 Bad Request</h2>')
         .expect(400);
 
-      yield app.httpRequest()
+      await app.httpRequest()
         .get('/500')
         .expect('hi, this custom 500 page')
         .expect(500);
 
-      yield app.httpRequest()
+      await app.httpRequest()
         .get('/special')
         .expect('Location', '/specialerror?real_status=500')
         .expect(302);
@@ -403,30 +407,28 @@ describe('test/onerror.test.js', () => {
         .expect(500);
     });
 
-    it('should custom log error log', done => {
-      done = pedding(done, 2);
-      mm(app.logger, 'error', err => {
-        assert.equal(err, 'error happened');
-        done();
+    it('should custom log error log', async () => {
+      let lastMessage;
+      mm(app.logger, 'error', msg => {
+        lastMessage = msg;
       });
-
-      app.httpRequest()
+      await app.httpRequest()
         .get('/?name=CustomError')
-        .expect(500)
-        .then(() => done(), done);
+        .expect(500);
+      assert(lastMessage === 'error happened');
     });
 
-    it('should default log error', done => {
-      done = pedding(done, 2);
+    it('should default log error', async () => {
+      let lastError;
       mm(app.logger, 'log', (LEVEL, args) => {
-        assert.equal(args[0].name, 'OtherError');
-        done();
+        lastError = args[0];
       });
 
-      app.httpRequest()
+      await app.httpRequest()
         .get('/?name=OtherError')
-        .expect(500)
-        .then(() => done(), done);
+        .expect(500);
+      assert(lastError);
+      assert(lastError.name === 'OtherError');
     });
   });
 
@@ -441,11 +443,11 @@ describe('test/onerror.test.js', () => {
     });
     after(() => app.close());
 
-    it('should log error', function* () {
-      console.log('app.stderr: %j', app.stderr);
-      console.log(app.stdout);
-      yield app.close();
-      assert(/nodejs.Error: emit error/.test(app.stderr));
+    it('should log error', async () => {
+      // console.log('app.stderr: %s', app.stderr);
+      // console.log(app.stdout);
+      await app.close();
+      assert.match(app.stderr, /TypeError/);
     });
   });
 

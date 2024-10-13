@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = app => {
   app.get('/', app.controller.home.index);
   app.get('/csrf', app.controller.home.csrf);

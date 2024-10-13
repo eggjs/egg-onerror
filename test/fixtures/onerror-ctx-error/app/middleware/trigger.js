@@ -1,8 +1,6 @@
-'use strict';
-
 module.exports = () => {
-  return function* (next) {
-    yield next;
-    this.logger.info('log something, then error happend.');
+  return async function(ctx, next) {
+    await next();
+    ctx.logger.info('log something, then error happend.');
   };
 };
