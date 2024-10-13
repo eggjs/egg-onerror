@@ -194,6 +194,16 @@ describe('test/onerror.test.js', () => {
       .expect(400);
   });
 
+  it('should ignore secure config on html response', () => {
+    return app.httpRequest()
+      .post('/test?status=400')
+      .send({ test: 1 })
+      .set('Content-Type', 'application/json')
+      .expect(/keys: &#39;&lt;String len: 7/)
+      .expect('Content-Type', 'text/html; charset=utf-8')
+      .expect(400);
+  });
+
   it('should return parsing json error on json response', () => {
     return app.httpRequest()
       .post('/test?status=400')
@@ -287,7 +297,8 @@ describe('test/onerror.test.js', () => {
       await app.close();
 
       const warnLog = path.join(__dirname, 'fixtures/onerror-4xx/logs/onerror-4xx/onerror-4xx-web.log');
-      assert(/POST \/body_parser] nodejs\..*?Error: request entity too large/.test(fs.readFileSync(warnLog, 'utf8')));
+      const content = fs.readFileSync(warnLog, 'utf8');
+      assert.match(content, /POST \/body_parser] nodejs\..*?Error: request entity too large/);
     });
   }
 
