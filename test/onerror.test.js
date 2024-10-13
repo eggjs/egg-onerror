@@ -270,7 +270,8 @@ describe('test/onerror.test.js', () => {
     });
   });
 
-  if (process.platform !== 'win32') {
+  if (process.platform === 'linux') {
+    // ignore Error: write ECONNRESET on windows and macos
     it('should log warn 4xx', async () => {
       fs.rmSync(path.join(__dirname, 'fixtrues/onerror-4xx/logs'), { force: true, recursive: true });
       const app = mm.app({
