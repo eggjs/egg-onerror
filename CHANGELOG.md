@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/eggjs/egg-onerror/compare/v2.3.1...v2.4.0) (2024-10-13)
+
+
+### Features
+
+* ignore secure config ([#34](https://github.com/eggjs/egg-onerror/issues/34)) ([bf61d5e](https://github.com/eggjs/egg-onerror/commit/bf61d5ee0edf128cc6ab082839c5bacbf8fa496f))
+
 ## [2.3.1](https://github.com/eggjs/egg-onerror/compare/v2.3.0...v2.3.1) (2024-10-13)
 
 
