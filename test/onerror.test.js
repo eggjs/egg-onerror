@@ -297,7 +297,8 @@ describe('test/onerror.test.js', () => {
       await app.close();
 
       const warnLog = path.join(__dirname, 'fixtures/onerror-4xx/logs/onerror-4xx/onerror-4xx-web.log');
-      assert(/POST \/body_parser] nodejs\..*?Error: request entity too large/.test(fs.readFileSync(warnLog, 'utf8')));
+      const content = fs.readFileSync(warnLog, 'utf8');
+      assert.match(content, /POST \/body_parser] nodejs\..*?Error: request entity too large/);
     });
   }
 
